@@ -1,0 +1,6 @@
+com\example\ParallelDistanceCalculator$Property.class
+com\example\Slave.class
+com\example\BarrioPriceStatsParallel.class
+com\example\ParallelDistanceCalculator.class
+com\example\FilterStatsParallel.class
+com\example\Master.class
