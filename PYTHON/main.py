@@ -3,20 +3,11 @@ import requests as rq
 import json
 import pandas as pd
 from datetime import date
-from dotenv import load_dotenv
-import os
-
-# Carga variables del archivo .env
-load_dotenv()
 
 def get_oauth_token():
     print("🔐 Solicitando token de acceso...")
-    api_key = os.getenv('API_KEY')
-    secret = os.getenv('SECRET')
-    if not api_key or not secret:
-        print("❌ Error: No se encontraron las variables de entorno API_KEY o SECRET.")
-        return None
-
+    api_key = '8bmhpa0pynyp76chho25nbwofnebhgt1'
+    secret = 'fX6Xsynzikgc'
     message = f"{api_key}:{secret}"
     auth = "Basic " + base64.b64encode(message.encode("ascii")).decode("ascii")
 
@@ -39,7 +30,6 @@ def get_oauth_token():
     print("🔑 Token obtenido correctamente.")
     return json.loads(response.text)['access_token']
 
-# El resto queda igual
 def define_search_params(pagination):
     return {
         'operation': 'sale',
