@@ -373,19 +373,19 @@ public class ClienteMain {
                             .replaceAll("&quot;", "\"")
                             .replaceAll("&amp;", "&")
                             .replaceAll("\\s+", " ")
-                            .replaceAll("(?i)sinónimos?:.*?(\\.|;|$)", "")
-                            .replaceAll("(?i)hipónimos?:.*?(\\.|;|$)", "")
-                            .replaceAll("(?i)hiperónimos?:.*?(\\.|;|$)", "")
-                            .replaceAll("(?i)relacionados?:.*?(\\.|;|$)", "")
-                            .replaceAll("(?i)ejemplo:.*?(\\.|;|$)", "")
-                            .replaceAll("(?i)ámbito:.*?(\\.|;|$)", "")
-                            .replaceAll("(?i)uso:.*?(\\.|;|$)", "")
-                            .replaceAll("(?i)isbn:.*?(\\.|;|$)", "")
-                            .replaceAll("(?i)véase también:.*?(\\.|;|$)", "")
-                            .replaceAll("(?i)traducciones?:.*?(\\.|;|$)", "")
-                            .replaceAll("(?i)referencias?:.*?(\\.|;|$)", "")
-                            .replaceAll("(?i)notas?:.*?(\\.|;|$)", "")
-                            .replaceAll("(?i)\\[.*?\\]", "") // quita referencias entre corchetes
+                            .replaceAll("(?iu)sinónimos?:.*?(\\.|;|$)", "")
+                            .replaceAll("(?iu)hipónimos?:.*?(\\.|;|$)", "")
+                            .replaceAll("(?iu)hiperónimos?:.*?(\\.|;|$)", "")
+                            .replaceAll("(?iu)relacionados?:.*?(\\.|;|$)", "")
+                            .replaceAll("(?iu)ejemplo:.*?(\\.|;|$)", "")
+                            .replaceAll("(?iu)ámbito:.*?(\\.|;|$)", "")
+                            .replaceAll("(?iu)uso:.*?(\\.|;|$)", "")
+                            .replaceAll("(?iu)isbn:.*?(\\.|;|$)", "")
+                            .replaceAll("(?iu)véase también:.*?(\\.|;|$)", "")
+                            .replaceAll("(?iu)traducciones?:.*?(\\.|;|$)", "")
+                            .replaceAll("(?iu)referencias?:.*?(\\.|;|$)", "")
+                            .replaceAll("(?iu)notas?:.*?(\\.|;|$)", "")
+                            .replaceAll("(?u)\\[.*?\\]", "") // quita referencias entre corchetes
                             .replaceAll("hipoteca\\d+", "hipoteca") // quita referencias tipo hipoteca1
                             .replaceAll("\\.mw-parser-output.*", "") // quita bloques de estilos
                             .trim();
