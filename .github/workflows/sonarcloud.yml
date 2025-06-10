@@ -1,25 +1,19 @@
-name: SonarQube Analysis
-
+name: Build
 on:
   push:
     branches:
-      - development
+      - main
   pull_request:
-    branches:
-      - development
-
+    types: [opened, synchronize, reopened]
 jobs:
-  sonar:
+  sonarqube:
+    name: SonarQube
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout del repositorio
-        uses: actions/checkout@v3
-
-      - name: Ejecutar análisis SonarQube
-        uses: SonarSource/sonarqube-scan-action@v5.0.0
+      - uses: actions/checkout@v4
         with:
-          args: >
-            -Dsonar.projectKey=POPBL6
-            -Dsonar.sources=POPBL/chat,POPBL/paralelizacion,PYTHON
-            -Dsonar.host.url=http://localhost:9000
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
