@@ -21,6 +21,9 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Comprobar versión de Java
+        run: java -version
+
       - name: Cache Maven packages
         uses: actions/cache@v3
         with:
