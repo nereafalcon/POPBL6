@@ -1,0 +1,120 @@
+RMI RABBITMQ
+Tiene sistemas distribuidos, sí
+- Distintas máquinas o procesos independientes
+- Servidor RMI permite registrarse y consultar usuarios
+- RabbitMQ actúa como intermediario de msgs
+-- Cada user su cola de mensajes
+
+RMI (para conexiones remotas!)
+- Sencillo de implementar en JAVA
+- Permite invocar métodos de forma directa y sincrónica
+- Controlar el acceso concurrente a la lista de usuarios compartida
+
+RabbitMQ
+- Permite comunicación asíncrona y desacoplada (almacenar msg hasta que receptor esté disponible)
+- Escalable
+- Evita que los clientes dependan de la conexión
+- Admite paralelización sin bloqueos
+
+Separamos responsabilidad
+Soporta concurrencia y escalabilidad
+Tolerante a fallos
+
+Usamos un exchange de tipo fanout porque queremos que cada mensaje enviado por un cliente sea entregado a todos los usuarios conectados, 
+simulando una sala de chat grupal.
+
+---
+CHAT TEMÁTICO
+hipoteca, alquiler, terminología....
+UN BOT que responde dudas frecuentes cuando detecta palabras clave.
+Se suscribe como cualquier otro cliente RabbitMQ, pero analiza los mensajes y responde automáticamente.
+HISTORIAL DE MENSAJES 
+
+AÑADIR SEGURIDADD!!!
+ACK manual en RabbitMQ (autoAck=false y basicAck).
+TLS en RabbitMQ (requiere configuración en servidor y cliente).
+Autenticación de usuario en RabbitMQ.
+Políticas de seguridad en RMI (y opcionalmente SSL).
+Valida entradas y cuida los logs.
+
+- RMI remoto  	
+
+NOTIFICACIONES EN RABBITMQ
+- recibir notificaciones al suscribirse a una casa(localizacion, precio max....)
+-- erosleak son los suscriptores
+- publican casas los usuarios (saltzaileak)
+
+PARALELIZAR AL BUSCAR LOS DATOS (EN DURANGO)
+O CON FILTROS O CON COORDENADAS
+(DEFINIR HOY)
+- Análisis estadístico del precio por m² en paralelo por barrios.
+Caché de resultados para búsquedas similares (optimización).
+Preprocesamiento paralelo de los datos al cargarlos.
+🔧 Estrategia 1: Cálculo paralelo de distancia en línea recta
+🔧 Estrategia 2: Filtros en paralelo (por atributos como precio, tamaño, zona...)
+⚡ Opcional: Añadir procesamiento de texto con hilos
+
+
+Paralelizazioa	
+Ez dute paralelizazio estrategiarik aplikatu edo konkurrentzia arazoak dituzte.	
+Informazioa eraginkortasunez tratatzeko paralelizazio estrategiak aplikatzen dituzte, konkurrentzia modu egokian kudeatuz.	
+Hainbat paralelizazio estrategiarekin egindako probak aurkezten dituzte, hartutako soluzioaren egokitasuna kuantitatiboki justifikatzen dutenak.	
+Paralelizazio estrategia modu eskalagarrian diseinatuta dago, nodo multzo aldakor baten konputazio-gaitasunak aprobetxatuz.
+
+Sistema banatuak	
+Ez dute sistema banatuez osaturiko aplikaziorik garatu edo garatutako arkitektura, komunikazioak eta inplementazioa ez dira egokiak.	
+Soluzioa sistema banatuez osatuta dago, eta horien arkitektura, komunikazioen definizioa eta inplementazioa arazoaren beharretara egokitzen da.	
+Egindako garapenean RabbitMQ edo/eta Java RMI middlewareak erabiltzen dituzte, arkitektura egokia diseinatuz eta konkurrentzia modu egokian kudeatuz.	
+Komunikazioak optimizatu dituzte, fidagarritasun edo/eta segurtasun-irizpideak aplikatuz.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+SEGURIDAD
+SSH zerbitzuaren segurtasuna areagotzeko konfigurazio neurriak hartzen dira, 
+kanpotik datozen brute-force erasoei aurre egiteko neurriak barne. 
+Pasahitz sendoen politika egokia definitu eta ezartzen da host guztietan. 
+
+Garatutako kodearen segurtasun ikuskaritza egiten da, 
+erreminta espezializatuak erabiliz. 
+Detektatutako software arazoak identifikatu eta konpondu egiten dira.
+- SONARQUBE, NO SOLO SEGURIDAD SI NO TAMBIÉN CALIDAD DEL CÓDIGO
+
+
+Eginiko arriskuen analisiak garatutako sistemaren hasierako 
+egoera hartzen du kontuan, 
+aktiboak, mehatxuak eta arriskuak identifikatuz.
+
+Aurkeztutako sistemarekin bat datorren backup politika egoki eta 
+arrazoitua diseinatzen da.
+
+
+ARRISKU ANALISIA DESPLEGATZEKO NEURRIAK EZARRI LEHENBAILEN
+
+DATU KRITIKOETAN X KONFIGURAZIOA
+
+ARRISKU ANALISIA BEGIRATZEA BERAREKIN (HURRENGO ASTEAN)
+
+
+
+
+
+
