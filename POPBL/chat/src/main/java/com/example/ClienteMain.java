@@ -12,195 +12,218 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ClienteMain {
+    private static final String COMPRADOR = "comprador";
+    private static final String VENDEDOR = "vendedor";
+    private static final String SALIR = "salir";
+
     public static void main(String[] args) {
         try {
-            // Conexión al servicio RMI
             IUserService userService = (IUserService) Naming.lookup("//localhost/UserService");
             Scanner sc = new Scanner(System.in);
 
-            boolean loggedIn = false;
-            String username = null;
-            String role = null;
-            UserImpl user = null;
+            // Login o registro
+            UserSession session = loginOrRegister(userService, sc);
 
-            while (!loggedIn) {
-                System.out.print("¿Registrar (r) o Login (l)? ");
-                String opcion = sc.nextLine();
-
-                System.out.print("Nombre de usuario: ");
-                username = sc.nextLine();
-
-                user = new UserImpl(username);
-
-                boolean ok;
-                if (opcion.equalsIgnoreCase("r")) {
-                    String inputRole = "";
-                    while (!inputRole.equals("comprador") && !inputRole.equals("vendedor")) {
-                        System.out.print("Rol (comprador/vendedor): ");
-                        inputRole = sc.nextLine().toLowerCase();
-                        if (!inputRole.equals("comprador") && !inputRole.equals("vendedor")) {
-                            System.out.println("Rol no válido. Debe ser 'comprador' o 'vendedor'.");
-                        }
-                    }
-                    role = inputRole;
-                    ok = userService.register(username, role, user); // o login
-                    if (ok) {
-                        System.out.println("Registrado correctamente como " + role + ".");
-                        loggedIn = true;
-                    } else {
-                        System.out.println("Usuario ya existe. Intenta con otro nombre o haz login.");
-                    }
-                } else {
-                    ok = userService.login(username, user);
-                    if (ok) {
-                        role = userService.getRole(username);
-                        System.out.println("Login correcto. Rol: " + role);
-                        loggedIn = true;
-                    } else {
-                        System.out.println("Usuario no registrado. Prueba a registrarte.");
-                    }
-                }
-            }
-
-            System.out.println("Bienvenido, " + username + " (" + role + ")");
+            System.out.println("Bienvenido, " + session.username + " (" + session.role + ")");
 
             boolean salir = false;
             while (!salir) {
-                if ("vendedor".equals(role)) {
-                    System.out.println("1. Crear casa");
-                    System.out.println("2. Listar casas");
-                    System.out.println("3. Ver mis chats");
-                    System.out.println("7. Ver notificaciones");
-                    System.out.println("8. Chatbot de definiciones");
-                    System.out.println("0. Salir");
-                    System.out.print("Opción: ");
-                    String opcion = sc.nextLine();
-                    switch (opcion) {
-                        case "1":
-                            System.out.print("Descripción de la casa: ");
-                            String desc = sc.nextLine();
-                            int id = userService.crearCasa(username, desc);
-                            System.out.println("Casa creada con ID: " + id);
-                            break;
-                        case "2":
-                            for (Casa casa : userService.listarCasas()) {
-                                System.out.println(casa);
-                            }
-                            break;
-                        case "3":
-                            verYChatear(userService, sc, username, role);
-                            break;
-                        case "7":
-                            List<String> notis = user.getNotificaciones();
-                            if (notis.isEmpty()) {
-                                System.out.println("No tienes notificaciones.");
-                            } else {
-                                System.out.println("Tus notificaciones:");
-                                for (String n : notis) {
-                                    System.out.println(n);
-                                }
-                            }
-                            break;
-                        case "8":
-                            chatbotDefiniciones(sc);
-                            break;
-                        case "0":
-                            salir = true;
-                            break;
-                    }
-                } else if ("comprador".equals(role)) {
-                    System.out.println("1. Listar casas");
-                    System.out.println("2. Añadir casa a favoritos");
-                    System.out.println("3. Ver mis chats");
-                    System.out.println("4. Iniciar chat con vendedor");
-                    System.out.println("5. Ver casas favoritas");
-                    System.out.println("6. Eliminar casa de favoritos");
-                    System.out.println("7. Ver notificaciones");
-                    System.out.println("8. Chatbot de definiciones");
-                    System.out.println("0. Salir");
-                    System.out.print("Opción: ");
-                    String opcion = sc.nextLine();
-                    switch (opcion) {
-                        case "1":
-                            for (Casa casa : userService.listarCasas()) {
-                                System.out.println(casa);
-                            }
-                            break;
-                        case "2":
-                            System.out.print("ID de la casa a añadir a favoritos: ");
-                            int favId = Integer.parseInt(sc.nextLine());
-                            try {
-                                userService.addCasaFavorita(username, favId);
-                                System.out.println("Casa añadida a favoritos.");
-                            } catch (Exception ex) {
-                                System.out.println("No se pudo añadir: " + ex.getMessage());
-                            }
-                            break;
-                        case "3":
-                            verYChatear(userService, sc, username, role);
-                            break;
-                        case "4":
-                            System.out.print("ID de la casa para chatear: ");
-                            int chatCasaId = Integer.parseInt(sc.nextLine());
-                            boolean existe = userService.listarCasas().stream().anyMatch(c -> c.getId() == chatCasaId);
-                            if (!existe) {
-                                System.out.println("La casa con ese ID no existe.");
-                                break;
-                            }
-                            String chatId = userService.crearChat(chatCasaId, username);
-                            System.out.println("Chat creado con ID: " + chatId);
-                            entrarEnChat(chatId, userService, sc, username);
-                            break;
-                        case "5":
-                            List<Casa> favoritas = userService.listarCasasFavoritas(username);
-                            if (favoritas.isEmpty()) {
-                                System.out.println("No tienes casas favoritas.");
-                            } else {
-                                System.out.println("Tus casas favoritas:");
-                                for (Casa casa : favoritas) {
-                                    System.out.println(casa);
-                                }
-                            }
-                            break;
-                        case "6":
-                            List<Casa> favs = userService.listarCasasFavoritas(username);
-                            if (favs.isEmpty()) {
-                                System.out.println("No tienes casas favoritas.");
-                                break;
-                            }
-                            System.out.println("Tus casas favoritas:");
-                            for (Casa casa : favs) {
-                                System.out.println(casa);
-                            }
-                            System.out.print("ID de la casa a eliminar de favoritos: ");
-                            int delId = Integer.parseInt(sc.nextLine());
-                            userService.eliminarCasaFavorita(username, delId);
-                            System.out.println("Casa eliminada de favoritos.");
-                            break;
-                        case "7":
-                            List<String> notis = user.getNotificaciones();
-                            if (notis.isEmpty()) {
-                                System.out.println("No tienes notificaciones.");
-                            } else {
-                                System.out.println("Tus notificaciones:");
-                                for (String n : notis) {
-                                    System.out.println(n);
-                                }
-                            }
-                            break;
-                        case "8":
-                            chatbotDefiniciones(sc);
-                            break;
-                        case "0":
-                            salir = true;
-                            break;
-                    }
+                if (VENDEDOR.equals(session.role)) {
+                    salir = menuVendedor(userService, sc, session.username, session.user);
+                } else if (COMPRADOR.equals(session.role)) {
+                    salir = menuComprador(userService, sc, session.username, session.user);
                 }
             }
             sc.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Error: " + e.getMessage());
         }
+    }
+
+    // Estructura para mantener la sesión de usuario
+    private static class UserSession {
+        String username, role;
+        UserImpl user;
+
+        UserSession(String username, String role, UserImpl user) {
+            this.username = username;
+            this.role = role;
+            this.user = user;
+        }
+    }
+
+    // Lógica de login/registro
+    private static UserSession loginOrRegister(IUserService userService, Scanner sc) throws Exception {
+        boolean loggedIn = false;
+        String username = null, role = null;
+        UserImpl user = null;
+        while (!loggedIn) {
+            System.out.print("¿Registrar (r) o Login (l)? ");
+            String opcion = sc.nextLine();
+            System.out.print("Nombre de usuario: ");
+            username = sc.nextLine();
+            user = new UserImpl(username);
+            boolean ok;
+            if (opcion.equalsIgnoreCase("r")) {
+                role = pedirRol(sc);
+                ok = userService.register(username, role, user);
+                if (ok) {
+                    System.out.println("Registrado correctamente como " + role + ".");
+                    loggedIn = true;
+                } else {
+                    System.out.println("Usuario ya existe. Intenta con otro nombre o haz login.");
+                }
+            } else {
+                ok = userService.login(username, user);
+                if (ok) {
+                    role = userService.getRole(username);
+                    System.out.println("Login correcto. Rol: " + role);
+                    loggedIn = true;
+                } else {
+                    System.out.println("Usuario no registrado. Prueba a registrarte.");
+                }
+            }
+        }
+        return new UserSession(username, role, user);
+    }
+
+    private static String pedirRol(Scanner sc) {
+        String inputRole = "";
+        while (!inputRole.equals(COMPRADOR) && !inputRole.equals(VENDEDOR)) {
+            System.out.print("Rol (comprador/vendedor): ");
+            inputRole = sc.nextLine().toLowerCase();
+            if (!inputRole.equals(COMPRADOR) && !inputRole.equals(VENDEDOR)) {
+                System.out.println("Rol no válido. Debe ser 'comprador' o 'vendedor'.");
+            }
+        }
+        return inputRole;
+    }
+
+    // Menú vendedor
+    private static boolean menuVendedor(IUserService userService, Scanner sc, String username, UserImpl user)
+            throws Exception {
+        System.out.println("1. Crear casa");
+        System.out.println("2. Listar casas");
+        System.out.println("3. Ver mis chats");
+        System.out.println("7. Ver notificaciones");
+        System.out.println("8. Chatbot de definiciones");
+        System.out.println("0. Salir");
+        System.out.print("Opción: ");
+        switch (sc.nextLine()) {
+            case "1":
+                System.out.print("Descripción de la casa: ");
+                int id = userService.crearCasa(username, sc.nextLine());
+                System.out.println("Casa creada con ID: " + id);
+                break;
+            case "2":
+                userService.listarCasas().forEach(System.out::println);
+                break;
+            case "3":
+                verYChatear(userService, sc, username, VENDEDOR);
+                break;
+            case "7":
+                mostrarNotificaciones(user);
+                break;
+            case "8":
+                chatbotDefiniciones(sc);
+                break;
+            case "0":
+                return true;
+            default:
+                System.out.println("Opción no válida.");
+        }
+        return false;
+    }
+
+    // Menú comprador
+    private static boolean menuComprador(IUserService userService, Scanner sc, String username, UserImpl user)
+            throws Exception {
+        System.out.println("1. Listar casas");
+        System.out.println("2. Añadir casa a favoritos");
+        System.out.println("3. Ver mis chats");
+        System.out.println("4. Iniciar chat con vendedor");
+        System.out.println("5. Ver casas favoritas");
+        System.out.println("6. Eliminar casa de favoritos");
+        System.out.println("7. Ver notificaciones");
+        System.out.println("8. Chatbot de definiciones");
+        System.out.println("0. Salir");
+        System.out.print("Opción: ");
+        switch (sc.nextLine()) {
+            case "1":
+                userService.listarCasas().forEach(System.out::println);
+                break;
+            case "2":
+                System.out.print("ID de la casa a añadir a favoritos: ");
+                try {
+                    userService.addCasaFavorita(username, Integer.parseInt(sc.nextLine()));
+                    System.out.println("Casa añadida a favoritos.");
+                } catch (Exception ex) {
+                    System.out.println("No se pudo añadir: " + ex.getMessage());
+                }
+                break;
+            case "3":
+                verYChatear(userService, sc, username, COMPRADOR);
+                break;
+            case "4":
+                System.out.print("ID de la casa para chatear: ");
+                int chatCasaId = Integer.parseInt(sc.nextLine());
+                boolean existe = userService.listarCasas().stream().anyMatch(c -> c.getId() == chatCasaId);
+                if (!existe) {
+                    System.out.println("La casa con ese ID no existe.");
+                    break;
+                }
+                String chatId = userService.crearChat(chatCasaId, username);
+                System.out.println("Chat creado con ID: " + chatId);
+                entrarEnChat(chatId, userService, sc, username);
+                break;
+            case "5":
+                mostrarFavoritas(userService, username);
+                break;
+            case "6":
+                eliminarFavorita(userService, sc, username);
+                break;
+            case "7":
+                mostrarNotificaciones(user);
+                break;
+            case "8":
+                chatbotDefiniciones(sc);
+                break;
+            case "0":
+                return true;
+            default:
+                System.out.println("Opción no válida.");
+        }
+        return false;
+    }
+
+    // Métodos auxiliares para mostrar notificaciones y favoritas
+    private static void mostrarNotificaciones(UserImpl user) {
+        List<String> notis = user.getNotificaciones();
+        if (notis.isEmpty())
+            System.out.println("No tienes notificaciones.");
+        else
+            notis.forEach(System.out::println);
+    }
+
+    private static void mostrarFavoritas(IUserService userService, String username) throws Exception {
+        List<Casa> favoritas = userService.listarCasasFavoritas(username);
+        if (favoritas.isEmpty())
+            System.out.println("No tienes casas favoritas.");
+        else
+            favoritas.forEach(System.out::println);
+    }
+
+    private static void eliminarFavorita(IUserService userService, Scanner sc, String username) throws Exception {
+        List<Casa> favs = userService.listarCasasFavoritas(username);
+        if (favs.isEmpty()) {
+            System.out.println("No tienes casas favoritas.");
+            return;
+        }
+        favs.forEach(System.out::println);
+        System.out.print("ID de la casa a eliminar de favoritos: ");
+        int delId = Integer.parseInt(sc.nextLine());
+        userService.eliminarCasaFavorita(username, delId);
+        System.out.println("Casa eliminada de favoritos.");
     }
 
     // Método auxiliar para ver y chatear en un chat existente
@@ -218,7 +241,6 @@ public class ClienteMain {
             String input = sc.nextLine();
             String cid = null;
             if (!input.isBlank()) {
-                // Permitir buscar por número final
                 for (String chat : misChats) {
                     if (chat.equals(input) || chat.endsWith("-" + input)) {
                         cid = chat;
@@ -237,7 +259,6 @@ public class ClienteMain {
             throws Exception {
         userService.usuarioEntraEnChat(chatId, username);
         try {
-            // Mostrar historial guardado en el servidor
             List<ChatMessage> historial = userService.obtenerHistorial(chatId);
             System.out.println("----- Historial del chat -----");
             for (ChatMessage m : historial) {
@@ -245,12 +266,9 @@ public class ClienteMain {
             }
             System.out.println("------------------------------");
 
-            // Limpia la cola de RabbitMQ (consume y descarta mensajes pendientes)
             String queueName = chatId + "-" + username;
-            RabbitMQUtil.purgeQueue(queueName); // Debes implementar este método para consumir y descartar mensajes
-                                                // pendientes
+            RabbitMQUtil.purgeQueue(queueName);
 
-            // Listener SOLO activo mientras estás en el chat (solo imprime mensajes nuevos)
             Thread listener = new Thread(() -> {
                 try {
                     RabbitMQUtil.receiveMessages(queueName, (consumerTag, delivery) -> {
@@ -266,21 +284,17 @@ public class ClienteMain {
             listener.setDaemon(true);
             listener.start();
 
-            // Enviar mensajes
             System.out.println("Escribe tu mensaje (o 'salir' para terminar):");
             while (true) {
                 String mensaje = sc.nextLine();
-                if ("salir".equalsIgnoreCase(mensaje))
+                if (SALIR.equalsIgnoreCase(mensaje))
                     break;
-                userService.enviarMensaje(chatId, new ChatMessage(username, mensaje)); // Guarda en historial
-
-                // Determina el destinatario
+                userService.enviarMensaje(chatId, new ChatMessage(username, mensaje));
                 String[] partes = chatId.split("-");
                 String comprador = partes[1];
                 String vendedor = partes[2];
                 String destinatario = username.equals(comprador) ? vendedor : comprador;
                 String destQueue = chatId + "-" + destinatario;
-
                 RabbitMQUtil.sendMessage(destQueue, username + ": " + mensaje);
             }
         } finally {
@@ -294,7 +308,7 @@ public class ClienteMain {
         while (true) {
             System.out.print("Tú: ");
             String input = sc.nextLine();
-            if ("salir".equalsIgnoreCase(input))
+            if (SALIR.equalsIgnoreCase(input))
                 break;
             String respuesta = obtenerDefinicionDesdeWikcionario(input);
             System.out.println("Chatbot: " + respuesta);
@@ -306,7 +320,6 @@ public class ClienteMain {
             String endpoint = "https://es.wiktionary.org/w/api.php?action=parse&page=" +
                     URLEncoder.encode(palabra, "UTF-8") +
                     "&format=json&prop=text&formatversion=2";
-            @SuppressWarnings("deprecation")
             URL url = new URL(endpoint);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
@@ -327,7 +340,6 @@ public class ClienteMain {
 
             String htmlRaw = response.toString();
 
-            // Extraer el contenido de "text"
             Pattern pattern = Pattern.compile("\"text\"\\s*:\\s*\"(.*?)\"\\s*\\}\\s*\\}\\s*\\}\\s*$", Pattern.DOTALL);
             Matcher matcher = pattern.matcher(htmlRaw);
             String html;
@@ -344,17 +356,14 @@ public class ClienteMain {
                 html = htmlRaw.substring(idx, end);
             }
 
-            // Desescapa caracteres especiales
             html = html.replace("\\n", "\n").replace("\\\"", "\"");
 
-            // Busca la sección Español
             int idxEsp = html.toLowerCase().indexOf(">español<");
             if (idxEsp == -1) {
                 return "No se encontró una definición clara para '" + palabra + "'.";
             }
             String htmlEspanol = html.substring(idxEsp);
 
-            // Busca todos los <dl>...</dl> tras la sección Español
             Pattern dlPattern = Pattern.compile("<dl>(.*?)</dl>", Pattern.DOTALL);
             Matcher dlMatcher = dlPattern.matcher(htmlEspanol);
 
@@ -363,39 +372,14 @@ public class ClienteMain {
             java.util.HashSet<String> definicionesUnicas = new java.util.HashSet<>();
             while (dlMatcher.find() && count < 3) {
                 String dlBlock = dlMatcher.group(1);
-                // Busca todos los <dd>...</dd> dentro del <dl>
                 Pattern ddPattern = Pattern.compile("<dd>(.*?)</dd>", Pattern.DOTALL);
                 Matcher ddMatcher = ddPattern.matcher(dlBlock);
                 while (ddMatcher.find() && count < 3) {
-                    String def = ddMatcher.group(1)
-                            .replaceAll("<[^>]+>", "") // quita etiquetas HTML
-                            .replaceAll("&nbsp;?", " ")
-                            .replaceAll("&quot;", "\"")
-                            .replaceAll("&amp;", "&")
-                            .replaceAll("\\s+", " ")
-                            .replaceAll("(?iu)sinónimos?:.*?(\\.|;|$)", "")
-                            .replaceAll("(?iu)hipónimos?:.*?(\\.|;|$)", "")
-                            .replaceAll("(?iu)hiperónimos?:.*?(\\.|;|$)", "")
-                            .replaceAll("(?iu)relacionados?:.*?(\\.|;|$)", "")
-                            .replaceAll("(?iu)ejemplo:.*?(\\.|;|$)", "")
-                            .replaceAll("(?iu)ámbito:.*?(\\.|;|$)", "")
-                            .replaceAll("(?iu)uso:.*?(\\.|;|$)", "")
-                            .replaceAll("(?iu)isbn:.*?(\\.|;|$)", "")
-                            .replaceAll("(?iu)véase también:.*?(\\.|;|$)", "")
-                            .replaceAll("(?iu)traducciones?:.*?(\\.|;|$)", "")
-                            .replaceAll("(?iu)referencias?:.*?(\\.|;|$)", "")
-                            .replaceAll("(?iu)notas?:.*?(\\.|;|$)", "")
-                            .replaceAll("(?u)\\[.*?\\]", "") // quita referencias entre corchetes
-                            .replaceAll("hipoteca\\d+", "hipoteca") // quita referencias tipo hipoteca1
-                            .replaceAll("\\.mw-parser-output.*", "") // quita bloques de estilos
-                            .trim();
-                    // Solo la primera frase (hasta punto y seguido o salto de línea)
+                    String def = limpiarDefinicion(ddMatcher.group(1));
                     int punto = def.indexOf(".");
                     if (punto > 0)
                         def = def.substring(0, punto + 1);
-                    // Quita definiciones vacías, repetidas o que sean solo números
                     if (!def.isEmpty() && !def.matches("^\\d+$") && definicionesUnicas.add(def)) {
-                        // Asegura que termina en punto
                         if (!def.endsWith("."))
                             def = def + ".";
                         definiciones.append(++count).append(". ").append(def).append("\n");
@@ -414,4 +398,28 @@ public class ClienteMain {
         }
     }
 
+    // Extrae la limpieza de definiciones a un método aparte
+    private static String limpiarDefinicion(String def) {
+        return def.replaceAll("<[^>]+>", "") // quita etiquetas HTML
+                .replace("&nbsp;", " ")
+                .replace("&quot;", "\"")
+                .replace("&amp;", "&")
+                .replaceAll("\\s+", " ")
+                .replaceAll("(?iu)sinónimos?:.*?(\\.|;|$)", "")
+                .replaceAll("(?iu)hipónimos?:.*?(\\.|;|$)", "")
+                .replaceAll("(?iu)hiperónimos?:.*?(\\.|;|$)", "")
+                .replaceAll("(?iu)relacionados?:.*?(\\.|;|$)", "")
+                .replaceAll("(?iu)ejemplo:.*?(\\.|;|$)", "")
+                .replaceAll("(?iu)ámbito:.*?(\\.|;|$)", "")
+                .replaceAll("(?iu)uso:.*?(\\.|;|$)", "")
+                .replaceAll("(?iu)isbn:.*?(\\.|;|$)", "")
+                .replaceAll("(?iu)véase también:.*?(\\.|;|$)", "")
+                .replaceAll("(?iu)traducciones?:.*?(\\.|;|$)", "")
+                .replaceAll("(?iu)referencias?:.*?(\\.|;|$)", "")
+                .replaceAll("(?iu)notas?:.*?(\\.|;|$)", "")
+                .replaceAll("(?u)\\[.*?\\]", "")
+                .replaceAll("hipoteca\\d+", "hipoteca")
+                .replaceAll("\\.mw-parser-output.*", "")
+                .trim();
+    }
 }
