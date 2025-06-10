@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+body {
+    font-family: "Inter", sans-serif;
+    color: #3F3F3F;
+    background-color: #ffffff;
+}
+
+.hero-gradient {
+    background: linear-gradient(180deg, #ffffff 0%, #e0e7ff 100%);
+}
+
+.search-bar-shadow {
+    box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.card-shadow {
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.icon-sm {
+    font-size: 1.25rem;
+}
+
+.icon-md {
+    font-size: 1.5rem;
+}

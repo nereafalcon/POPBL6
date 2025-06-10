@@ -1,0 +1,6 @@
+services:
+  frontend:
+    container_name: muef-web
+    build: .
+    ports:
+      - "5174:80"

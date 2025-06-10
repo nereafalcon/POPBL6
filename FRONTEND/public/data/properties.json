@@ -1,0 +1,614 @@
+[
+    {
+        "id": "aK3tV9Fb",
+        "title": "Deustuko 3 Logelako Apartamentu Zabal bat",
+        "owner": {
+            "name": "Sandra Olaiz",
+            "avatar": "https://i.pravatar.cc/44?img=26"
+        },
+        "gallery": [
+            "/images/properties/aK3tV9Fb/1.webp",
+            "/images/properties/aK3tV9Fb/2.webp",
+            "/images/properties/aK3tV9Fb/3.webp",
+            "/images/properties/aK3tV9Fb/4.webp",
+            "/images/properties/aK3tV9Fb/5.webp"
+        ],
+        "alt": "Balkoidun apartamentu modernoa",
+        "price": 650,
+        "rooms": 3,
+        "bathrooms": 2,
+        "hasGarage": true,
+        "area": 110,
+        "description": "Ikasleentzat aproposa, Deustuko Unibertsitate ondoan. Erabat hornitua, ekipamendu modernoekin eta eguzkitsua den balkoiarekin.",
+        "location": "Bilbo, Bizkaia",
+        "nearby": [
+            {
+                "icon": "🚇",
+                "name": "Indautxu Metro Geltokia",
+                "distance": "300m",
+                "walking_time": "4 min oinez"
+            },
+            {
+                "icon": "🏬",
+                "name": "El Corte Ingles Gran Via",
+                "distance": "700m",
+                "walking_time": "9 min oinez"
+            },
+            {
+                "icon": "🏟️",
+                "name": "San Mames Estadioa",
+                "distance": "1,2km",
+                "walking_time": "17 min oinez"
+            },
+            {
+                "icon": "🎓",
+                "name": "Deustuko Unibertsitatea",
+                "distance": "1,6km",
+                "walking_time": "5 min oinez"
+            }
+        ],
+        "listed": "Duela 2 egun zerrendatua",
+        "bookmarked": false
+    },
+    {
+        "id":  "qM7uG1Xt",
+        "title": "Estudio Xarmagarria Alde Zaharrean",
+        "owner": {
+            "name": "Angel Izquierdo",
+            "avatar": "https://i.pravatar.cc/44?img=27"
+        },
+        "gallery":  [
+            "/images/properties/qM7uG1Xt/1.jpg",
+            "/images/properties/qM7uG1Xt/2.jpg",
+            "/images/properties/qM7uG1Xt/3.jpg",
+            "/images/properties/qM7uG1Xt/4.jpg",
+            "/images/properties/qM7uG1Xt/5.jpg"
+        ],
+        "alt": "Alde Zaharreko estudio goxoa",
+        "price": 720,
+        "rooms": 2,
+        "bathrooms": 2,
+        "hasGarage": true,
+        "area": 45,
+        "description": "Pertsona bakar edo bikote gazte baterako aproposa. Berriki berritua, Alde Zaharreko bihotzean kokatua.",
+        "location": "Donostia, Gipuzkoa",
+        "nearby": [
+            {
+                "icon": "🚇",
+                "name": "Indautxu Metro Geltokia",
+                "distance": "300m",
+                "walking_time": "4 min oinez"
+            },
+            {
+                "icon": "🏬",
+                "name": "El Corte Ingles Gran Via",
+                "distance": "700m",
+                "walking_time": "9 min oinez"
+            },
+            {
+                "icon": "🏟️",
+                "name": "San Mames Estadioa",
+                "distance": "1,2km",
+                "walking_time": "17 min oinez"
+            },
+            {
+                "icon": "🎓",
+                "name": "Deustuko Unibertsitatea",
+                "distance": "1,6km",
+                "walking_time": "5 min oinez"
+            }
+        ],
+        "listed": "Duela 5 egun zerrendatua",
+        "bookmarked": false
+    },
+    {
+        "id":  "YcJ5zQrN",
+        "title": "Zurbarango Etxe Adimentsua",
+        "owner": {
+            "name": "Lucia Exposito",
+            "avatar": "https://i.pravatar.cc/44?img=28"
+        },
+        "gallery":  [
+            "/images/properties/YcJ5zQrN/1.jpg",
+            "/images/properties/YcJ5zQrN/2.jpg",
+            "/images/properties/YcJ5zQrN/3.jpg",
+            "/images/properties/YcJ5zQrN/4.jpg",
+            "/images/properties/YcJ5zQrN/5.jpg"
+        ],
+        "alt": "Teknologia berriz hornitutako etxea",
+        "price": 1150,
+        "rooms": 3,
+        "bathrooms": 2,
+        "hasGarage": true,
+        "area": 95,
+        "description": "Etxe adimentsua, argiztapen eta berokuntza automatizatuekin. Aparkaleku pribatua eta terraza.",
+        "location": "Bilbo, Bizkaia",
+        "nearby": [
+            {
+                "icon": "🚇",
+                "name": "Indautxu Metro Geltokia",
+                "distance": "300m",
+                "walking_time": "4 min oinez"
+            },
+            {
+                "icon": "🏬",
+                "name": "El Corte Ingles Gran Via",
+                "distance": "700m",
+                "walking_time": "9 min oinez"
+            },
+            {
+                "icon": "🏟️",
+                "name": "San Mames Estadioa",
+                "distance": "1,2km",
+                "walking_time": "17 min oinez"
+            },
+            {
+                "icon": "🎓",
+                "name": "Deustuko Unibertsitatea",
+                "distance": "1,6km",
+                "walking_time": "5 min oinez"
+            }
+        ],
+        "listed": "Duela 1 aste zerrendatua",
+        "bookmarked": false
+    },
+    {
+        "id":  "xT2WpLgH",
+        "title": "Gasteizko Etxebizitza Familiarra",
+        "owner": {
+            "name": "Carlos Castillo",
+            "avatar": "https://i.pravatar.cc/44?img=29"
+        },
+        "gallery":  [
+            "/images/properties/xT2WpLgH/1.jpg",
+            "/images/properties/xT2WpLgH/2.jpg",
+            "/images/properties/xT2WpLgH/3.jpg",
+            "/images/properties/xT2WpLgH/4.jpg",
+            "/images/properties/xT2WpLgH/5.jpg"
+        ],
+        "alt": "Lorategidun etxebizitza handia",
+        "price": 2200,
+        "rooms": 4,
+        "bathrooms": 3,
+        "hasGarage": true,
+        "area": 140,
+        "description": "Familia handi baterako aproposa. Lorategia, sukalde modernoa eta egongela zabala.",
+        "location": "Gasteiz, Araba",
+        "nearby": [
+            {
+                "icon": "🚇",
+                "name": "Indautxu Metro Geltokia",
+                "distance": "300m",
+                "walking_time": "4 min oinez"
+            },
+            {
+                "icon": "🏬",
+                "name": "El Corte Ingles Gran Via",
+                "distance": "700m",
+                "walking_time": "9 min oinez"
+            },
+            {
+                "icon": "🏟️",
+                "name": "San Mames Estadioa",
+                "distance": "1,2km",
+                "walking_time": "17 min oinez"
+            },
+            {
+                "icon": "🎓",
+                "name": "Deustuko Unibertsitatea",
+                "distance": "1,6km",
+                "walking_time": "5 min oinez"
+            }
+        ],
+        "listed": "Duela 3 egun zerrendatua",
+        "bookmarked": false
+    },
+    {
+        "id":  "NrQ3tMuc",
+        "title": "Iruneko Atiko Berritua",
+        "owner": {
+            "name": "Lucas Lopez",
+            "avatar": "https://i.pravatar.cc/44?img=30"
+        },
+        "gallery":  [
+            "/images/properties/NrQ3tMuc/1.jpg",
+            "/images/properties/NrQ3tMuc/2.jpg",
+            "/images/properties/NrQ3tMuc/3.jpg",
+            "/images/properties/NrQ3tMuc/4.jpg",
+            "/images/properties/NrQ3tMuc/5.jpg"
+        ],
+        "alt": "Eguzkipeko atikoa terraza ikusgarriarekin",
+        "price": 980,
+        "rooms": 2,
+        "bathrooms": 1,
+        "hasGarage": true,
+        "area": 80,
+        "description": "Atiko argitsua, terraza panoramikoarekin eta itsasorako ikuspegiekin. Berritua eta hornitua.",
+        "location": "Iruñea, Nafarroa",
+        "nearby": [
+            {
+                "icon": "🚇",
+                "name": "Indautxu Metro Geltokia",
+                "distance": "300m",
+                "walking_time": "4 min oinez"
+            },
+            {
+                "icon": "🏬",
+                "name": "El Corte Ingles Gran Via",
+                "distance": "700m",
+                "walking_time": "9 min oinez"
+            },
+            {
+                "icon": "🏟️",
+                "name": "San Mames Estadioa",
+                "distance": "1,2km",
+                "walking_time": "17 min oinez"
+            },
+            {
+                "icon": "🎓",
+                "name": "Deustuko Unibertsitatea",
+                "distance": "1,6km",
+                "walking_time": "5 min oinez"
+            }
+        ],
+        "listed": "Duela 4 egun zerrendatua",
+        "bookmarked": false
+    },
+    {
+        "id":  "bVw9XkF2",
+        "title": "Barakaldoko Pisua Ikasleentzat",
+        "owner": {
+            "name": "Leo Quintana",
+            "avatar": "https://i.pravatar.cc/44?img=31"
+        },
+        "gallery":  [
+            "/images/properties/bVw9XkF2/1.webp",
+            "/images/properties/bVw9XkF2/2.webp",
+            "/images/properties/bVw9XkF2/3.webp",
+            "/images/properties/bVw9XkF2/4.webp",
+            "/images/properties/bVw9XkF2/5.webp"
+        ],
+        "alt": "Pisua gela banatu eta hornituekin",
+        "price": 590,
+        "rooms": 3,
+        "bathrooms": 1,
+        "hasGarage": true,
+        "area": 85,
+        "description": "Ikasleentzat egokia, metro geltokiaren ondoan. Internet barne eta komun partekatua.",
+        "location": "Barakaldo, Bizkaia",
+        "nearby": [
+            {
+                "icon": "🚇",
+                "name": "Indautxu Metro Geltokia",
+                "distance": "300m",
+                "walking_time": "4 min oinez"
+            },
+            {
+                "icon": "🏬",
+                "name": "El Corte Ingles Gran Via",
+                "distance": "700m",
+                "walking_time": "9 min oinez"
+            },
+            {
+                "icon": "🏟️",
+                "name": "San Mames Estadioa",
+                "distance": "1,2km",
+                "walking_time": "17 min oinez"
+            },
+            {
+                "icon": "🎓",
+                "name": "Deustuko Unibertsitatea",
+                "distance": "1,6km",
+                "walking_time": "5 min oinez"
+            }
+        ],
+        "listed": "Duela 6 egun zerrendatua",
+        "bookmarked": false
+    },
+    {
+        "id":  "pX1LmHqJ",
+        "title": "Baserri Berritua Urdaibain",
+        "owner": {
+            "name": "Rosa Ruano",
+            "avatar": "https://i.pravatar.cc/44?img=32"
+        },
+        "gallery":  [
+            "/images/properties/pX1LmHqJ/1.jpg",
+            "/images/properties/pX1LmHqJ/2.jpg",
+            "/images/properties/pX1LmHqJ/3.jpg",
+            "/images/properties/pX1LmHqJ/4.jpg",
+            "/images/properties/pX1LmHqJ/5.jpg"
+        ],
+        "alt": "Landazabaleko baserri berritua",
+        "price": 680,
+        "rooms": 5,
+        "bathrooms": 3,
+        "hasGarage": true,
+        "area": 200,
+        "description": "Natura eremuan kokatua, lasaitasunez gozatzeko aukera paregabea. Baserri estiloa eta egurrezko akaberak.",
+        "location": "Urdaibai, Bizkaia",
+        "nearby": [
+            {
+                "icon": "🚇",
+                "name": "Indautxu Metro Geltokia",
+                "distance": "300m",
+                "walking_time": "4 min oinez"
+            },
+            {
+                "icon": "🏬",
+                "name": "El Corte Ingles Gran Via",
+                "distance": "700m",
+                "walking_time": "9 min oinez"
+            },
+            {
+                "icon": "🏟️",
+                "name": "San Mames Estadioa",
+                "distance": "1,2km",
+                "walking_time": "17 min oinez"
+            },
+            {
+                "icon": "🎓",
+                "name": "Deustuko Unibertsitatea",
+                "distance": "1,6km",
+                "walking_time": "5 min oinez"
+            }
+        ],
+        "listed": "Duela aste 1 zerrendatua",
+        "bookmarked": false
+    },
+    {
+        "id":  "Zs8kR2Mn",
+        "title": "Estudio Goxoa Zarautzen",
+        "owner": {
+            "name": "Victor Izquierdo",
+            "avatar": "https://i.pravatar.cc/44?img=33"
+        },
+        "gallery":  [
+            "/images/properties/Zs8kR2Mn/1.jpg",
+            "/images/properties/Zs8kR2Mn/2.jpg",
+            "/images/properties/Zs8kR2Mn/3.jpg",
+            "/images/properties/Zs8kR2Mn/4.jpg",
+            "/images/properties/Zs8kR2Mn/5.jpg"
+        ],
+        "alt": "Itsasertzeko estudio txikia",
+        "price": 2500,
+        "rooms": 1,
+        "bathrooms": 1,
+        "hasGarage": true,
+        "area": 40,
+        "description": "Bakarkako bizitzarako egokia, hondartzatik minutu gutxira. Balkoi txikia eta sukalde txikia barne.",
+        "location": "Zarautz, Gipuzkoa",
+        "nearby": [
+            {
+                "icon": "🚇",
+                "name": "Indautxu Metro Geltokia",
+                "distance": "300m",
+                "walking_time": "4 min oinez"
+            },
+            {
+                "icon": "🏬",
+                "name": "El Corte Ingles Gran Via",
+                "distance": "700m",
+                "walking_time": "9 min oinez"
+            },
+            {
+                "icon": "🏟️",
+                "name": "San Mames Estadioa",
+                "distance": "1,2km",
+                "walking_time": "17 min oinez"
+            },
+            {
+                "icon": "🎓",
+                "name": "Deustuko Unibertsitatea",
+                "distance": "1,6km",
+                "walking_time": "5 min oinez"
+            }
+        ],
+        "listed": "Duela 3 egun zerrendatua",
+        "bookmarked": false
+    },
+    {
+        "id":  "fUc73NbV",
+        "title": "Duplex Zentrala Bilbon",
+        "owner": {
+            "name": "Julia Redondo",
+            "avatar": "https://i.pravatar.cc/44?img=34"
+        },
+        "gallery":  [
+            "/images/properties/fUc73NbV/1.jpg",
+            "/images/properties/fUc73NbV/2.jpg",
+            "/images/properties/fUc73NbV/3.jpg",
+            "/images/properties/fUc73NbV/4.jpg",
+            "/images/properties/fUc73NbV/5.jpg"
+        ],
+        "alt": "Bi solairutako apartamentua Bilboko erdigunean",
+        "price": 850,
+        "rooms": 3,
+        "bathrooms": 2,
+        "hasGarage": true,
+        "area": 130,
+        "description": "Erdigunean kokatua, diseinu modernoa eta goiko solairuan sukaldea eta egongela dituena.",
+        "location": "Bilbo, Bizkaia",
+        "nearby": [
+            {
+                "icon": "🚇",
+                "name": "Indautxu Metro Geltokia",
+                "distance": "300m",
+                "walking_time": "4 min oinez"
+            },
+            {
+                "icon": "🏬",
+                "name": "El Corte Ingles Gran Via",
+                "distance": "700m",
+                "walking_time": "9 min oinez"
+            },
+            {
+                "icon": "🏟️",
+                "name": "San Mames Estadioa",
+                "distance": "1,2km",
+                "walking_time": "17 min oinez"
+            },
+            {
+                "icon": "🎓",
+                "name": "Deustuko Unibertsitatea",
+                "distance": "1,6km",
+                "walking_time": "5 min oinez"
+            }
+        ],
+        "listed": "Duela 2 egun zerrendatua",
+        "bookmarked": false
+    },
+    {
+        "id":  "Jq0vYzXl",
+        "title": "Ordiziako Etxe Merkea",
+        "owner": {
+            "name": "Mario Castillo",
+            "avatar": "https://i.pravatar.cc/44?img=35"
+        },
+        "gallery":  [
+            "/images/properties/Jq0vYzXl/1.jpg",
+            "/images/properties/Jq0vYzXl/2.jpg",
+            "/images/properties/Jq0vYzXl/3.jpg",
+            "/images/properties/Jq0vYzXl/4.jpg",
+            "/images/properties/Jq0vYzXl/5.jpg"
+        ],
+        "alt": "Etxe sinplea prezio onean",
+        "price": 600,
+        "rooms": 2,
+        "bathrooms": 1,
+        "hasGarage": true,
+        "area": 60,
+        "description": "Hasiberrientzako aukera bikaina. Eguzkitsua eta hornitua, ingurune lasaian.",
+        "location": "Ordizia, Gipuzkoa",
+        "nearby": [
+            {
+                "icon": "🚇",
+                "name": "Indautxu Metro Geltokia",
+                "distance": "300m",
+                "walking_time": "4 min oinez"
+            },
+            {
+                "icon": "🏬",
+                "name": "El Corte Ingles Gran Via",
+                "distance": "700m",
+                "walking_time": "9 min oinez"
+            },
+            {
+                "icon": "🏟️",
+                "name": "San Mames Estadioa",
+                "distance": "1,2km",
+                "walking_time": "17 min oinez"
+            },
+            {
+                "icon": "🎓",
+                "name": "Deustuko Unibertsitatea",
+                "distance": "1,6km",
+                "walking_time": "5 min oinez"
+            }
+        ],
+        "listed": "Duela 7 egun zerrendatua",
+        "bookmarked": false
+    },
+    {
+        "id":  "nE6rTbGp",
+        "title": "Etxe Paregabea Hondarribian",
+        "owner": {
+            "name": "Dante Martinez",
+            "avatar": "https://i.pravatar.cc/44?img=36"
+        },
+        "gallery":  [
+            "/images/properties/nE6rTbGp/1.jpg",
+            "/images/properties/nE6rTbGp/2.jpg",
+            "/images/properties/nE6rTbGp/3.jpg",
+            "/images/properties/nE6rTbGp/4.jpg",
+            "/images/properties/nE6rTbGp/5.jpg"
+        ],
+        "alt": "Estilo kolonialeko etxea",
+        "price": 1300,
+        "rooms": 4,
+        "bathrooms": 3,
+        "hasGarage": true,
+        "area": 160,
+        "description": "Estilo berezia eta kokapen ikusgarria duen etxea. Itsasora begira eta giro epela.",
+        "location": "Hondarribia, Gipuzkoa",
+        "nearby": [
+            {
+                "icon": "🚇",
+                "name": "Indautxu Metro Geltokia",
+                "distance": "300m",
+                "walking_time": "4 min oinez"
+            },
+            {
+                "icon": "🏬",
+                "name": "El Corte Ingles Gran Via",
+                "distance": "700m",
+                "walking_time": "9 min oinez"
+            },
+            {
+                "icon": "🏟️",
+                "name": "San Mames Estadioa",
+                "distance": "1,2km",
+                "walking_time": "17 min oinez"
+            },
+            {
+                "icon": "🎓",
+                "name": "Deustuko Unibertsitatea",
+                "distance": "1,6km",
+                "walking_time": "5 min oinez"
+            }
+        ],
+        "listed": "Duela 1 aste zerrendatua",
+        "bookmarked": false
+    },
+    {
+        "id":  "hX5pKzWq",
+        "title": "Bergarako Apartamentu Eraberritua",
+        "owner": {
+            "name": "Nuria Gracia",
+            "avatar": "https://i.pravatar.cc/44?img=37"
+        },
+        "gallery":  [
+            "/images/properties/hX5pKzWq/1.jpg",
+            "/images/properties/hX5pKzWq/2.jpg",
+            "/images/properties/hX5pKzWq/3.jpg",
+            "/images/properties/hX5pKzWq/4.jpg",
+            "/images/properties/hX5pKzWq/5.jpg"
+        ],
+        "alt": "Apartamentu txukuna Bergaran",
+        "price": 2100,
+        "rooms": 2,
+        "bathrooms": 1,
+        "hasGarage": true,
+        "area": 70,
+        "description": "Erdigunean, merkataritza guneen ondoan. Oso egoera onean, prest bizitzeko.",
+        "location": "Bergara, Gipuzkoa",
+        "nearby": [
+            {
+                "icon": "🚇",
+                "name": "Indautxu Metro Geltokia",
+                "distance": "300m",
+                "walking_time": "4 min oinez"
+            },
+            {
+                "icon": "🏬",
+                "name": "El Corte Ingles Gran Via",
+                "distance": "700m",
+                "walking_time": "9 min oinez"
+            },
+            {
+                "icon": "🏟️",
+                "name": "San Mames Estadioa",
+                "distance": "1,2km",
+                "walking_time": "17 min oinez"
+            },
+            {
+                "icon": "🎓",
+                "name": "Deustuko Unibertsitatea",
+                "distance": "1,6km",
+                "walking_time": "5 min oinez"
+            }
+        ],
+        "listed": "Duela 2 egun zerrendatua",
+        "bookmarked": false
+    }
+]
