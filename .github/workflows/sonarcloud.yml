@@ -20,7 +20,7 @@ jobs:
         with:
           args: >
             -Dsonar.projectKey=POPBL6
-            -Dsonar.sources=POPBL/chat,POPBL/paralelizacion,PYTHON,FRONTEND
+            -Dsonar.sources=POPBL/chat,POPBL/paralelizacion,PYTHON
             -Dsonar.host.url=https://sonarcloud.io
             -Dsonar.organization=nereafalcon
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
