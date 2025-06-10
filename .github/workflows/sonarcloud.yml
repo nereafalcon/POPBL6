@@ -19,4 +19,4 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectKey: POPBL6
-          organization: nereafalcon  # Solo si tienes organización en SonarCloud
+          organization: nereafalcon 
