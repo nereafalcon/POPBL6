@@ -52,7 +52,7 @@ public class ClienteMain {
         }
     }
 
-    // Lógica de login/registro
+    // Lógica de login/register
     private static UserSession loginOrRegister(IUserService userService, Scanner sc) throws Exception {
         boolean loggedIn = false;
         String username = null, role = null;
