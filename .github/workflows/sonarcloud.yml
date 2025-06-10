@@ -16,10 +16,11 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Ejecutar análisis SonarQube
-        uses: sonarsource/sonarcloud-github-action@master
+        uses: SonarSource/sonarqube-scan-action@v5.0.0
         with:
           args: >
             -Dsonar.projectKey=POPBL6
             -Dsonar.sources=POPBL/chat,POPBL/paralelizacion,PYTHON,FRONTEND
-            -Dsonar.host.url=http://localhost:9000
+            -Dsonar.host.url=https://sonarcloud.io
+            -Dsonar.organization=nereafalcon
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
