@@ -5,16 +5,16 @@ import java.rmi.RemoteException;
 import java.util.*;
 
 public class UserServiceImpl extends UnicastRemoteObject implements IUserService {
-    private Map<String, IUser> users = new HashMap<>();
-    private Map<String, String> roles = new HashMap<>();
-    private Map<Integer, Casa> casas = new HashMap<>();
-    private Map<String, Set<Integer>> favoritos = new HashMap<>();
-    private Map<String, List<ChatMessage>> chats = new HashMap<>();
-    // Mapa: chatId -> Set de usuarios conectados a ese chat
-    private Map<String, Set<String>> usuariosEnChat = new HashMap<>();
+    private transient Map<String, IUser> users = new HashMap<>();
+    private transient Map<String, String> roles = new HashMap<>();
+    private transient Map<Integer, Casa> casas = new HashMap<>();
+    private transient Map<String, Set<Integer>> favoritos = new HashMap<>();
+    private transient Map<String, List<ChatMessage>> chats = new HashMap<>();
+    private transient Map<String, Set<String>> usuariosEnChat = new HashMap<>();
     private int nextCasaId = 1;
 
     public UserServiceImpl() throws RemoteException {
+        super();
     }
 
     @Override

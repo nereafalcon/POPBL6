@@ -9,6 +9,11 @@ import java.util.concurrent.*;
 import java.util.stream.*;
 
 public class FilterStatsParallel {
+	
+	private static final String DISTRICT_KEY = "district";
+	private static final String PRICEBYAREA_KEY = "priceByArea";
+	private static final String SURFACE_KEY = "surface";
+
     public static void main(String[] args) throws Exception {
         String csvPath = "paralelizacion\\src\\main\\resources\\idealista_toda_españa_2025-05-29.csv";
         int maxLines = 150 * 500; // Cambia este valor para pruebas empíricas
@@ -16,8 +21,8 @@ public class FilterStatsParallel {
 
         // Normalización de datos: limpiar espacios y pasar a minúsculas
         for (Map<String, String> v : viviendas) {
-            if (v.get("district") != null)
-                v.put("district", v.get("district").trim().toLowerCase());
+            if (v.get(DISTRICT_KEY) != null)
+                v.put(DISTRICT_KEY, v.get(DISTRICT_KEY).trim().toLowerCase());
         }
 
         // Filtros definidos por el usuario
@@ -42,8 +47,8 @@ public class FilterStatsParallel {
                                ", Price: " + v.get("price") +
                                ", Size: " + v.get("size") +
                                ", Rooms: " + v.get("rooms") +
-                               ", District: " + v.get("district") +
-                               ", PriceByArea: " + v.get("priceByArea"));
+                               ", District: " + v.get(DISTRICT_KEY) +
+                               ", PriceByArea: " + v.get(PRICEBYAREA_KEY));
         });*/
 
         // 2. Paralelo
@@ -61,8 +66,8 @@ public class FilterStatsParallel {
                                ", Price: " + v.get("price") +
                                ", Size: " + v.get("size") +
                                ", Rooms: " + v.get("rooms") +
-                               ", District: " + v.get("district") +
-                               ", PriceByArea: " + v.get("priceByArea"));
+                               ", District: " + v.get(DISTRICT_KEY) +
+                               ", PriceByArea: " + v.get(PRICEBYAREA_KEY));
         });*/
 
         // 3. ExecutorService con varios hilos
@@ -96,8 +101,8 @@ public class FilterStatsParallel {
                                    ", Price: " + v.get("price") +
                                    ", Size: " + v.get("size") +
                                    ", Rooms: " + v.get("rooms") +
-                                   ", District: " + v.get("district") +
-                                   ", PriceByArea: " + v.get("priceByArea"));
+                                   ", District: " + v.get(DISTRICT_KEY) +
+                                   ", PriceByArea: " + v.get(PRICEBYAREA_KEY));
             });*/
         }
 
@@ -121,24 +126,24 @@ public class FilterStatsParallel {
                                ", Price: " + v.get("price") +
                                ", Size: " + v.get("size") +
                                ", Rooms: " + v.get("rooms") +
-                               ", District: " + v.get("district") +
-                               ", PriceByArea: " + v.get("priceByArea"));
+                               ", District: " + v.get(DISTRICT_KEY) +
+                               ", PriceByArea: " + v.get(PRICEBYAREA_KEY));
         });*/
     }
 
     private static boolean applyFilters(Map<String, String> vivienda, double minPriceByArea, double maxPriceByArea,
                                         double minSurface, double maxSurface, String districtFilter) {
-        double priceByArea = safeParseDouble(vivienda.get("priceByArea"));
-        double surface = safeParseDouble(vivienda.get("surface"));
-        String district = vivienda.get("district");
+        double priceByArea = safeParseDouble(vivienda.get(PRICEBYAREA_KEY));
+        double surface = safeParseDouble(vivienda.get(SURFACE_KEY));
+        String district = vivienda.get(DISTRICT_KEY);
 
-        // Normalizar el campo "district" para evitar problemas de mayúsculas/minúsculas
+        // Normalizar el campo DISTRICT_KEY para evitar problemas de mayúsculas/minúsculas
         if (district != null) {
             district = district.trim().toLowerCase().replaceAll("[^a-záéíóúñ ]", "");
         }
 
-        // Manejar valores null en "surface"
-        boolean surfaceMatches = (vivienda.get("surface") == null) || (surface >= minSurface && surface <= maxSurface);
+        // Manejar valores null en SURFACE_KEY
+        boolean surfaceMatches = (vivienda.get(SURFACE_KEY) == null) || (surface >= minSurface && surface <= maxSurface);
 
         return priceByArea >= minPriceByArea && priceByArea <= maxPriceByArea &&
                surfaceMatches &&

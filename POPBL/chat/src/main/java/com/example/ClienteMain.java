@@ -227,32 +227,50 @@ public class ClienteMain {
     }
 
     // Método auxiliar para ver y chatear en un chat existente
-    private static void verYChatear(IUserService userService, Scanner sc, String username, String role)
-            throws Exception {
-        List<String> misChats = userService.obtenerChatsUsuario(username);
-        if (misChats.isEmpty()) {
-            System.out.println("No tienes chats activos.");
-        } else {
-            System.out.println("Tus chats:");
-            for (String cid : misChats) {
-                System.out.println(cid);
-            }
-            System.out.print("Introduce el ID del chat para entrar o pulsa Enter para volver: ");
-            String input = sc.nextLine();
-            String cid = null;
-            if (!input.isBlank()) {
-                for (String chat : misChats) {
-                    if (chat.equals(input) || chat.endsWith("-" + input)) {
-                        cid = chat;
-                        break;
-                    }
-                }
-                if (cid != null) {
-                    entrarEnChat(cid, userService, sc, username);
-                }
-            }
-        }
-    }
+	private static void verYChatear(IUserService userService, Scanner sc, String username, String role) throws Exception {
+
+		List<String> misChats = userService.obtenerChatsUsuario(username);
+
+		if (misChats.isEmpty()) {
+			System.out.println("No tienes chats activos.");
+			return;
+		}
+
+		mostrarChats(misChats);
+		String input = pedirIdChat(sc);
+
+		if (input.isBlank()) {
+			return; // Vuelve sin hacer nada
+		}
+
+		String cid = buscarChatPorId(misChats, input);
+
+		if (cid != null) {
+			entrarEnChat(cid, userService, sc, username);
+		}
+	}
+
+	private static void mostrarChats(List<String> chats) {
+		System.out.println("Tus chats:");
+		for (String cid : chats) {
+			System.out.println(cid);
+		}
+	}
+
+	private static String pedirIdChat(Scanner sc) {
+		System.out.print("Introduce el ID del chat para entrar o pulsa Enter para volver: ");
+		return sc.nextLine();
+	}
+
+	private static String buscarChatPorId(List<String> chats, String input) {
+		for (String chat : chats) {
+			if (chat.equals(input) || chat.endsWith("-" + input)) {
+				return chat;
+			}
+		}
+		return null;
+	}
+
 
     // Método auxiliar para entrar a un chat y enviar/recibir mensajes
     private static void entrarEnChat(String chatId, IUserService userService, Scanner sc, String username)
@@ -315,88 +333,116 @@ public class ClienteMain {
         }
     }
 
-    private static String obtenerDefinicionDesdeWikcionario(String palabra) {
-        try {
-            String endpoint = "https://es.wiktionary.org/w/api.php?action=parse&page=" +
-                    URLEncoder.encode(palabra, "UTF-8") +
-                    "&format=json&prop=text&formatversion=2";
-            URL url = new URL(endpoint);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            con.setRequestProperty("Accept", "application/json");
+	private static String obtenerDefinicionDesdeWikcionario(String palabra) {
+		try {
+			String htmlRaw = obtenerRespuestaWikcionario(palabra);
+			if (htmlRaw == null) {
+				return "No se encontró definición para '" + palabra + "'.";
+			}
 
-            int status = con.getResponseCode();
-            if (status != 200) {
-                return "No se encontró definición para '" + palabra + "'.";
-            }
+			String html = extraerHtmlTexto(htmlRaw);
+			if (html == null) {
+				return "No se encontró definición para '" + palabra + "'.";
+			}
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = in.readLine()) != null) {
-                response.append(line);
-            }
-            in.close();
+			html = limpiarHtml(html);
 
-            String htmlRaw = response.toString();
+			String htmlEspanol = obtenerSeccionEspanol(html);
+			if (htmlEspanol == null) {
+				return "No se encontró una definición clara para '" + palabra + "'.";
+			}
 
-            Pattern pattern = Pattern.compile("\"text\"\\s*:\\s*\"(.*?)\"\\s*\\}\\s*\\}\\s*\\}\\s*$", Pattern.DOTALL);
-            Matcher matcher = pattern.matcher(htmlRaw);
-            String html;
-            if (matcher.find()) {
-                html = matcher.group(1);
-            } else {
-                int idx = htmlRaw.indexOf("\"text\":\"");
-                if (idx == -1)
-                    return "No se encontró definición para '" + palabra + "'.";
-                idx += 8;
-                int end = htmlRaw.indexOf("\"}", idx);
-                if (end == -1)
-                    end = htmlRaw.length();
-                html = htmlRaw.substring(idx, end);
-            }
+			String definiciones = extraerDefiniciones(htmlEspanol, 3);
+			if (definiciones.isEmpty()) {
+				return "No se encontró una definición clara para '" + palabra + "'.";
+			}
 
-            html = html.replace("\\n", "\n").replace("\\\"", "\"");
+			return "(desde Wikcionario)\n" + definiciones.trim();
 
-            int idxEsp = html.toLowerCase().indexOf(">español<");
-            if (idxEsp == -1) {
-                return "No se encontró una definición clara para '" + palabra + "'.";
-            }
-            String htmlEspanol = html.substring(idxEsp);
+		} catch (Exception e) {
+			return "Error al conectar con Wikcionario: " + e.getMessage();
+		}
+	}
 
-            Pattern dlPattern = Pattern.compile("<dl>(.*?)</dl>", Pattern.DOTALL);
-            Matcher dlMatcher = dlPattern.matcher(htmlEspanol);
+	private static String obtenerRespuestaWikcionario(String palabra) throws Exception {
+		String endpoint = "https://es.wiktionary.org/w/api.php?action=parse&page=" +
+				URLEncoder.encode(palabra, "UTF-8") +
+				"&format=json&prop=text&formatversion=2";
+		URL url = new URL(endpoint);
+		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		con.setRequestMethod("GET");
+		con.setRequestProperty("Accept", "application/json");
 
-            StringBuilder definiciones = new StringBuilder();
-            int count = 0;
-            java.util.HashSet<String> definicionesUnicas = new java.util.HashSet<>();
-            while (dlMatcher.find() && count < 3) {
-                String dlBlock = dlMatcher.group(1);
-                Pattern ddPattern = Pattern.compile("<dd>(.*?)</dd>", Pattern.DOTALL);
-                Matcher ddMatcher = ddPattern.matcher(dlBlock);
-                while (ddMatcher.find() && count < 3) {
-                    String def = limpiarDefinicion(ddMatcher.group(1));
-                    int punto = def.indexOf(".");
-                    if (punto > 0)
-                        def = def.substring(0, punto + 1);
-                    if (!def.isEmpty() && !def.matches("^\\d+$") && definicionesUnicas.add(def)) {
-                        if (!def.endsWith("."))
-                            def = def + ".";
-                        definiciones.append(++count).append(". ").append(def).append("\n");
-                    }
-                }
-            }
+		int status = con.getResponseCode();
+		if (status != 200) {
+			return null;
+		}
 
-            if (definiciones.length() == 0) {
-                return "No se encontró una definición clara para '" + palabra + "'.";
-            }
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
+			StringBuilder response = new StringBuilder();
+			String line;
+			while ((line = in.readLine()) != null) {
+				response.append(line);
+			}
+			return response.toString();
+		}
+	}
 
-            return "(desde Wikcionario)\n" + definiciones.toString().trim();
+	private static String extraerHtmlTexto(String htmlRaw) {
+		Pattern pattern = Pattern.compile("\"text\"\\s*:\\s*\"(.*?)\"\\s*\\}\\s*\\}\\s*\\}\\s*$", Pattern.DOTALL);
+		Matcher matcher = pattern.matcher(htmlRaw);
+		if (matcher.find()) {
+			return matcher.group(1);
+		} else {
+			int idx = htmlRaw.indexOf("\"text\":\"");
+			if (idx == -1) return null;
+			idx += 8;
+			int end = htmlRaw.indexOf("\"}", idx);
+			if (end == -1) end = htmlRaw.length();
+			return htmlRaw.substring(idx, end);
+		}
+	}
 
-        } catch (Exception e) {
-            return "Error al conectar con Wikcionario: " + e.getMessage();
-        }
-    }
+	private static String limpiarHtml(String html) {
+		return html.replace("\\n", "\n").replace("\\\"", "\"");
+	}
+
+	private static String obtenerSeccionEspanol(String html) {
+		int idxEsp = html.toLowerCase().indexOf(">español<");
+		if (idxEsp == -1) {
+			return null;
+		}
+		return html.substring(idxEsp);
+	}
+
+	private static String extraerDefiniciones(String htmlEspanol, int maxDefiniciones) {
+		Pattern dlPattern = Pattern.compile("<dl>(.*?)</dl>", Pattern.DOTALL);
+		Matcher dlMatcher = dlPattern.matcher(htmlEspanol);
+
+		StringBuilder definiciones = new StringBuilder();
+		int count = 0;
+		java.util.HashSet<String> definicionesUnicas = new java.util.HashSet<>();
+
+		while (dlMatcher.find() && count < maxDefiniciones) {
+			String dlBlock = dlMatcher.group(1);
+			Pattern ddPattern = Pattern.compile("<dd>(.*?)</dd>", Pattern.DOTALL);
+			Matcher ddMatcher = ddPattern.matcher(dlBlock);
+			while (ddMatcher.find() && count < maxDefiniciones) {
+				String def = limpiarDefinicion(ddMatcher.group(1));
+				int punto = def.indexOf(".");
+				if (punto > 0)
+					def = def.substring(0, punto + 1);
+				if (!def.isEmpty() && !def.matches("^\\d+$") && definicionesUnicas.add(def)) {
+					if (!def.endsWith("."))
+						def = def + ".";
+					definiciones.append(++count).append(". ").append(def).append("\n");
+				}
+			}
+		}
+
+		return definiciones.toString();
+	}
+
 
     // Extrae la limpieza de definiciones a un método aparte
     private static String limpiarDefinicion(String def) {

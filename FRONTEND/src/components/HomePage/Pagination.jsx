@@ -27,31 +27,37 @@ const Pagination = () => {
                     <span className="material-icons icon-sm">chevron_left</span>
                 </button>
 
-                {pages.map((page, i) =>
-				  page === '...' ? (
-					<span
-					  key={`ellipsis-${i}`}
-					  className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
-					>
-					  …
-					</span>
-				  ) : (
-					<button
-					  key={`page-${page}`}
-					  type="button"
-					  onClick={() => handlePageClick(page)}
-					  className={`relative inline-flex items-center px-4 py-2 border ${
-						page === 1
-						  ? 'border-indigo-500 bg-indigo-50 text-indigo-600'
-						  : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-					  } text-sm font-medium`}
-					>
-					  {page}
-					</button>
-				  )
-				)}
+                let ellipsisCount = 0;
 
-
+				{pages.map((page) => {
+				  if (page === '...') {
+					ellipsisCount += 1;
+					return (
+					  <span
+						key={`ellipsis-${ellipsisCount}`}  // key basado en cuántos elipsis van
+						className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+					  >
+						…
+					  </span>
+					);
+				  } else {
+					return (
+					  <button
+						key={`page-${page}`}
+						type="button"
+						onClick={() => handlePageClick(page)}
+						className={`relative inline-flex items-center px-4 py-2 border ${
+						  page === 1
+							? 'border-indigo-500 bg-indigo-50 text-indigo-600'
+							: 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+						} text-sm font-medium`}
+					  >
+						{page}
+					  </button>
+					);
+				  }
+				})}
+				
                 <button
                     type="button"
                     onClick={handleNext}

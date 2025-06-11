@@ -10,90 +10,97 @@ import java.util.stream.*;
 
 public class BarrioPriceStatsParallel {
 
+    // Constante para evitar duplicar el literal "district"
+    private static final String DISTRICT_KEY = "district";
+	private static final String PRICEBYAREA_KEY = "priceByArea";
+
     public static void main(String[] args) throws Exception {
         String csvPath = "paralelizacion\\src\\main\\resources\\idealista_toda_españa_2025-05-29.csv";
-        int maxLines = 150 * 500; // Cambiar valores
+        int maxLines = 150 * 500;
         List<Map<String, String>> viviendas = loadCSV(csvPath, maxLines);
 
-        // Normalización de datos: limpiar espacios y pasar a minúsculas
-        for (Map<String, String> v : viviendas) {
-            if (v.get("district") != null)
-                v.put("district", v.get("district").trim().toLowerCase());
-        }
+        normalizarDatos(viviendas);
 
-        // 1. Secuencial
-        long t1 = System.currentTimeMillis();
-        Map<String, DoubleSummaryStatistics> statsSecuencial = viviendas.stream()
-                .filter(v -> safeParseDouble(v.get("priceByArea")) < Double.MAX_VALUE && v.get("district") != null
-                        && !v.get("district").isEmpty())
-                .collect(Collectors.groupingBy(
-                        v -> v.get("district"),
-                        Collectors.summarizingDouble(v -> safeParseDouble(v.get("priceByArea")))));
-        long t2 = System.currentTimeMillis();
-        System.out.println("Tiempo stream secuencial: " + (t2 - t1) + " ms");
-        // printStats("Secuencial", statsSecuencial);
+        // 1. Stream secuencial
+        medirTiempo("stream secuencial", () -> calcularStatsStream(viviendas, false));
 
-        // 2. Paralelo
-        long t3 = System.currentTimeMillis();
-        Map<String, DoubleSummaryStatistics> statsParalelo = viviendas.parallelStream()
-                .filter(v -> safeParseDouble(v.get("priceByArea")) < Double.MAX_VALUE && v.get("district") != null
-                        && !v.get("district").isEmpty())
-                .collect(Collectors.groupingBy(
-                        v -> v.get("district"),
-                        Collectors.summarizingDouble(v -> safeParseDouble(v.get("priceByArea")))));
-        long t4 = System.currentTimeMillis();
-        System.out.println("Tiempo stream paralelo: " + (t4 - t3) + " ms");
-        // printStats("Paralelo", statsParalelo);
+        // 2. Stream paralelo
+        medirTiempo("stream paralelo", () -> calcularStatsStream(viviendas, true));
 
         // 3. ExecutorService con varios hilos
-        for (int threads : new int[] { 1, 2, 4, 8 }) {
-            long tIni = System.currentTimeMillis();
-            ExecutorService pool = Executors.newFixedThreadPool(threads);
-            Map<String, List<Map<String, String>>> grouped = viviendas.stream()
-                    .filter(v -> safeParseDouble(v.get("priceByArea")) < Double.MAX_VALUE && v.get("district") != null
-                            && !v.get("district").isEmpty())
-                    .collect(Collectors.groupingBy(v -> v.get("district")));
-            Map<String, DoubleSummaryStatistics> stats = new ConcurrentHashMap<>();
-            List<Future<?>> futures = new ArrayList<>();
-            for (String barrio : grouped.keySet()) {
-                List<Map<String, String>> lista = grouped.get(barrio);
-                futures.add(pool.submit(() -> {
-                    try {
-                        DoubleSummaryStatistics s = lista.stream()
-                                .mapToDouble(v -> safeParseDouble(v.get("priceByArea")))
-                                .summaryStatistics();
-                        stats.put(barrio, s);
-                    } catch (Exception e) {
-                    }
-                }));
-            }
-            for (Future<?> f : futures)
-                f.get();
-            pool.shutdown();
-            if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
-                pool.shutdownNow();
-            }
-            long tFin = System.currentTimeMillis();
-            System.out.println("Tiempo ExecutorService (" + threads + " hilos): " + (tFin - tIni) + " ms");
-            // printStats("ExecutorService (" + threads + " hilos)", stats);
+        int[] hilos = {1, 2, 4, 8};
+        for (int threads : hilos) {
+            medirTiempo("ExecutorService (" + threads + " hilos)", () -> calcularStatsExecutor(viviendas, threads));
         }
 
-        // Chunking
-        long t5 = System.currentTimeMillis();
-        int chunkSize = (int) Math.ceil((double) viviendas.size() / 4); // Dividir en 4 bloques
+        // 4. Chunking y balanceo de carga
+        medirTiempo("balanceo de carga (4 bloques)", () -> calcularStatsChunking(viviendas, 4));
+
+        // 5. ForkJoinPool
+        medirTiempo("ForkJoinPool (4 hilos)", () -> calcularStatsForkJoin(viviendas, 4));
+    }
+
+    private static void normalizarDatos(List<Map<String, String>> viviendas) {
+        for (Map<String, String> v : viviendas) {
+            if (v.get(DISTRICT_KEY) != null)
+                v.put(DISTRICT_KEY, v.get(DISTRICT_KEY).trim().toLowerCase());
+        }
+    }
+
+    private static Map<String, DoubleSummaryStatistics> calcularStatsStream(List<Map<String, String>> viviendas, boolean paralelo) {
+        Stream<Map<String, String>> stream = paralelo ? viviendas.parallelStream() : viviendas.stream();
+        return stream
+                .filter(v -> safeParseDouble(v.get(PRICEBYAREA_KEY)) < Double.MAX_VALUE && v.get(DISTRICT_KEY) != null
+                        && !v.get(DISTRICT_KEY).isEmpty())
+                .collect(Collectors.groupingBy(
+                        v -> v.get(DISTRICT_KEY),
+                        Collectors.summarizingDouble(v -> safeParseDouble(v.get(PRICEBYAREA_KEY)))));
+    }
+
+    private static void calcularStatsExecutor(List<Map<String, String>> viviendas, int threads) throws Exception {
+        ExecutorService pool = Executors.newFixedThreadPool(threads);
+        Map<String, List<Map<String, String>>> grouped = viviendas.stream()
+                .filter(v -> safeParseDouble(v.get(PRICEBYAREA_KEY)) < Double.MAX_VALUE && v.get(DISTRICT_KEY) != null
+                        && !v.get(DISTRICT_KEY).isEmpty())
+                .collect(Collectors.groupingBy(v -> v.get(DISTRICT_KEY)));
+
+        Map<String, DoubleSummaryStatistics> stats = new ConcurrentHashMap<>();
+        List<Future<?>> futures = new ArrayList<>();
+
+        for (String barrio : grouped.keySet()) {
+            List<Map<String, String>> lista = grouped.get(barrio);
+            futures.add(pool.submit(() -> {
+                DoubleSummaryStatistics s = lista.stream()
+                        .mapToDouble(v -> safeParseDouble(v.get(PRICEBYAREA_KEY)))
+                        .summaryStatistics();
+                stats.put(barrio, s);
+            }));
+        }
+        for (Future<?> f : futures)
+            f.get();
+        pool.shutdown();
+        if (!pool.awaitTermination(60, TimeUnit.SECONDS)) {
+            pool.shutdownNow();
+        }
+        // printStats("ExecutorService (" + threads + " hilos)", stats);
+    }
+
+    private static void calcularStatsChunking(List<Map<String, String>> viviendas, int bloques) throws Exception {
+        int chunkSize = (int) Math.ceil((double) viviendas.size() / bloques);
         List<List<Map<String, String>>> chunks = new ArrayList<>();
         for (int i = 0; i < viviendas.size(); i += chunkSize) {
             chunks.add(viviendas.subList(i, Math.min(i + chunkSize, viviendas.size())));
         }
 
-        ExecutorService poolBalanced = Executors.newFixedThreadPool(4);
+        ExecutorService poolBalanced = Executors.newFixedThreadPool(bloques);
         List<Future<Map<String, DoubleSummaryStatistics>>> balancedFutures = new ArrayList<>();
+
         for (List<Map<String, String>> chunk : chunks) {
             balancedFutures.add(poolBalanced.submit(() -> {
                 Map<String, DoubleSummaryStatistics> localStats = new HashMap<>();
                 for (Map<String, String> v : chunk) {
-                    String barrio = v.get("district");
-                    double priceByArea = safeParseDouble(v.get("priceByArea"));
+                    String barrio = v.get(DISTRICT_KEY);
+                    double priceByArea = safeParseDouble(v.get(PRICEBYAREA_KEY));
                     localStats.computeIfAbsent(barrio, k -> new DoubleSummaryStatistics())
                             .accept(priceByArea);
                 }
@@ -110,27 +117,28 @@ public class BarrioPriceStatsParallel {
             }));
         }
         poolBalanced.shutdown();
-        long t6 = System.currentTimeMillis();
-        System.out.println("Tiempo balanceo de carga (4 bloques): " + (t6 - t5) + " ms");
         // printStats("Balanceo de Carga", balancedStats);
+    }
 
-        // 5. ForkJoinPool
-        long t7 = System.currentTimeMillis();
-        ForkJoinPool forkJoinPool = new ForkJoinPool(4);
-        Map<String, DoubleSummaryStatistics> forkJoinStats = null;
+    private static void calcularStatsForkJoin(List<Map<String, String>> viviendas, int threads) throws Exception {
+        ForkJoinPool forkJoinPool = new ForkJoinPool(threads);
         try {
-            forkJoinStats = forkJoinPool.submit(() -> viviendas.parallelStream()
-                    .filter(v -> safeParseDouble(v.get("priceByArea")) < Double.MAX_VALUE && v.get("district") != null)
+            Map<String, DoubleSummaryStatistics> forkJoinStats = forkJoinPool.submit(() -> viviendas.parallelStream()
+                    .filter(v -> safeParseDouble(v.get(PRICEBYAREA_KEY)) < Double.MAX_VALUE && v.get(DISTRICT_KEY) != null)
                     .collect(Collectors.groupingBy(
-                            v -> v.get("district"),
-                            Collectors.summarizingDouble(v -> safeParseDouble(v.get("priceByArea"))))))
-                    .get();
+                            v -> v.get(DISTRICT_KEY),
+                            Collectors.summarizingDouble(v -> safeParseDouble(v.get(PRICEBYAREA_KEY)))))).get();
+            // printStats("ForkJoinPool", forkJoinStats);
         } finally {
             forkJoinPool.shutdown();
         }
-        long t8 = System.currentTimeMillis();
-        System.out.println("Tiempo ForkJoinPool (4 hilos): " + (t8 - t7) + " ms");
-        // printStats("ForkJoinPool", forkJoinStats);
+    }
+
+    private static void medirTiempo(String descripcion, Runnable tarea) throws Exception {
+        long start = System.currentTimeMillis();
+        tarea.run();
+        long end = System.currentTimeMillis();
+        System.out.println("Tiempo " + descripcion + ": " + (end - start) + " ms");
     }
 
     private static void printStats(String strategy, Map<String, DoubleSummaryStatistics> stats) {
