@@ -1,4 +1,20 @@
+# Carpetas que no deben ir al contenedor
 node_modules
 dist
 Dockerfile
 .dockerignore
+build
+coverage
+
+# Archivos sensibles o innecesarios
+.env
+*.log
+*.pem
+*.key
+*.crt
+Dockerfile
+docker-compose.yml
+.git
+.gitignore
+.vscode
+

@@ -1,17 +1,15 @@
 import { useState } from "react";
-import {Bed, Bath, Expand, Bookmark, BookmarkCheck, Trash2} from "lucide-react";
+import { Bed, Bath, Expand, Bookmark, BookmarkCheck, Trash2 } from "lucide-react";
 import PropTypes from "prop-types";
-import {useProperties} from "../context/PropertyContext.jsx";
+import { useProperties } from "../context/PropertyContext.jsx";
 
 const PropertyCard = ({ property, canBeDeleted = false }) => {
-
     const { deletePropertyById } = useProperties();
-
     const [bookmarked, setBookmarked] = useState(property.bookmarked || false);
 
     const toggleBookmark = () => {
         setBookmarked(!bookmarked);
-    }
+    };
 
     const handleDelete = (e) => {
         e.preventDefault();
@@ -19,8 +17,8 @@ const PropertyCard = ({ property, canBeDeleted = false }) => {
         if (canBeDeleted) {
             deletePropertyById(property.id);
         }
-    }
-    
+    };
+
     return (
         <div className="cursor-pointer rounded-2xl space-y-3 bg-white">
             {/* Image */}
@@ -35,11 +33,11 @@ const PropertyCard = ({ property, canBeDeleted = false }) => {
                     aria-label={bookmarked ? "Remove from bookmarks" : "Add to bookmarks"}
                     className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/50 p-2 rounded-full shadow hover:bg-black/70"
                 >
-                    {
-                        bookmarked ?
-                        <BookmarkCheck className="w-5 h-5 text-white" /> :
+                    {bookmarked ? (
+                        <BookmarkCheck className="w-5 h-5 text-white" />
+                    ) : (
                         <Bookmark className="w-5 h-5 text-white" />
-                    }
+                    )}
                 </button>
 
                 {canBeDeleted && (
@@ -55,15 +53,16 @@ const PropertyCard = ({ property, canBeDeleted = false }) => {
 
             {/* Price */}
             <div className="text-[1.75rem] font-semibold">
-                {property.price.toLocaleString()} € <span className="text-sm font-normal text-gray-500">/ hillero</span>
+                {property.price.toLocaleString()} €{" "}
+                <span className="text-sm font-normal text-gray-500">/ hillero</span>
             </div>
 
             {/* Location */}
             <div className="flex flex-col gap-1">
-                <h4 className="text-xl font-medium">
-                    {property.location}
-                </h4>
-                <span className="text-base text-[#6E6E6E] font-light">7 min oinez Deustuko Unibertsitatera</span>
+                <h4 className="text-xl font-medium">{property.location}</h4>
+                <span className="text-base text-[#6E6E6E] font-light">
+                    7 min oinez Deustuko Unibertsitatera
+                </span>
             </div>
 
             {/* Features */}
@@ -85,10 +84,11 @@ const PropertyCard = ({ property, canBeDeleted = false }) => {
             </div>
         </div>
     );
-}
+};
 
 PropertyCard.propTypes = {
     property: PropTypes.shape({
+        id: PropTypes.string.isRequired,
         gallery: PropTypes.arrayOf(PropTypes.string).isRequired,
         price: PropTypes.number.isRequired,
         location: PropTypes.string.isRequired,
@@ -96,7 +96,8 @@ PropertyCard.propTypes = {
         bathrooms: PropTypes.number.isRequired,
         area: PropTypes.number.isRequired,
         bookmarked: PropTypes.bool
-    }).isRequired
+    }).isRequired,
+    canBeDeleted: PropTypes.bool
 };
 
 export default PropertyCard;

@@ -4,8 +4,8 @@ import {useNavigate} from "react-router-dom";
 
 const USERS = [
     {
-        username: "jramos",
-        password: "jramos",
+        const user = process.env.REACT_APP_ADMIN_USER;
+        const password = process.env.REACT_APP_ADMIN_PASSWORD;
         name: "Jon Ramos",
     },
 ];

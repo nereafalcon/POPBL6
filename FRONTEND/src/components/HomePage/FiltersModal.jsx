@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
 const amenitiesList = [
     { key: 'ad_haslift', label: 'Lift' },
@@ -28,9 +29,10 @@ const FiltersModal = ({ onApply }) => {
 
             {/* Price Range */}
             <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Price Range (€)</label>
+                <label htmlFor="price-range" className="block text-sm font-medium text-gray-700 mb-1">Price Range (€)</label>
                 <div className="flex gap-2">
                     <input
+						id="price-range"
                         type="number"
                         value={minPrice}
                         onChange={(e) => setMinPrice(e.target.value)}
@@ -49,8 +51,9 @@ const FiltersModal = ({ onApply }) => {
 
             {/* Bedrooms */}
             <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Bedrooms</label>
+                <label htmlFor="bedrooms" className="block text-sm font-medium text-gray-700 mb-1">Bedrooms</label>
                 <select
+					id="bedrooms"
                     value={bedrooms}
                     onChange={(e) => setBedrooms(e.target.value)}
                     className="w-full border border-gray-300 rounded-lg px-3 py-2"
@@ -65,11 +68,12 @@ const FiltersModal = ({ onApply }) => {
 
             {/* Amenities */}
             <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Amenities</label>
-                <div className="grid grid-cols-2 gap-2">
+                <label htmlFor="amenities" className="block text-sm font-medium text-gray-700 mb-1">Amenities</label>
+                <div className="grid grid-cols-2 gap-2" id="amenities">
                     {amenitiesList.map(({ key, label }) => (
-                        <label key={key} className="flex items-center space-x-2">
+                        <label key={key} htmlFor={checkboxId} className="flex items-center space-x-2">
                             <input
+								id={checkboxId}
                                 type="checkbox"
                                 checked={!!amenities[key]}
                                 onChange={() => toggleAmenity(key)}
@@ -102,6 +106,10 @@ const FiltersModal = ({ onApply }) => {
             </div>
         </div>
     );
+};
+
+FiltersModal.propTypes = {
+    onApply: PropTypes.func.isRequired,
 };
 
 export default FiltersModal;

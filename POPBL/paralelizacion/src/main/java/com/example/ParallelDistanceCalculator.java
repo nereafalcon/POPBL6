@@ -6,6 +6,8 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
 public class ParallelDistanceCalculator {
 
@@ -14,6 +16,8 @@ public class ParallelDistanceCalculator {
         double latitude;
         double longitude;
         double distance;
+		private static final Pattern DIGIT_PATTERN = Pattern.compile("\\d");
+
 
         public Property(String code, double latitude, double longitude) {
             this.code = code;
@@ -73,11 +77,11 @@ public class ParallelDistanceCalculator {
             return Double.parseDouble(coordinate);
         } catch (NumberFormatException e) {
             // Si no es un número, intentar limpiar el texto
-            if (coordinate.matches(".*\\d+.*")) {
-                // Extraer el primer número encontrado en el texto
-                String cleaned = coordinate.replaceAll("[^\\d.-]", "");
-                return Double.parseDouble(cleaned);
-            }
+			Matcher matcher = DIGIT_PATTERN.matcher(coordinate);
+			if (matcher.find()) {
+				String cleaned = coordinate.replaceAll("[^\\d.-]", "");
+				return Double.parseDouble(cleaned);
+			}
             // Si no contiene números, lanzar la excepción
             throw new NumberFormatException("Coordenada inválida: " + coordinate);
         }
