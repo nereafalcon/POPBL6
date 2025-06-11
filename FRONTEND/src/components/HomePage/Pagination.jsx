@@ -28,28 +28,29 @@ const Pagination = () => {
                 </button>
 
                 {pages.map((page, i) =>
-                    page === '...' ? (
-                        <span
-                            key={i}
-                            className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
-                        >
-                            …
-                        </span>
-                    ) : (
-                        <button
-                            key={i}
-                            type="button"
-                            onClick={() => handlePageClick(page)}
-                            className={`relative inline-flex items-center px-4 py-2 border ${
-                                page === 1
-                                    ? 'border-indigo-500 bg-indigo-50 text-indigo-600'
-                                    : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-                            } text-sm font-medium`}
-                        >
-                            {page}
-                        </button>
-                    )
-                )}
+				  page === '...' ? (
+					<span
+					  key={`ellipsis-${i}`}
+					  className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700"
+					>
+					  …
+					</span>
+				  ) : (
+					<button
+					  key={`page-${page}`}
+					  type="button"
+					  onClick={() => handlePageClick(page)}
+					  className={`relative inline-flex items-center px-4 py-2 border ${
+						page === 1
+						  ? 'border-indigo-500 bg-indigo-50 text-indigo-600'
+						  : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+					  } text-sm font-medium`}
+					>
+					  {page}
+					</button>
+				  )
+				)}
+
 
                 <button
                     type="button"

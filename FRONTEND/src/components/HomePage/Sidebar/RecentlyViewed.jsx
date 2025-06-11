@@ -19,9 +19,9 @@ const RecentlyViewed = ({ items, onItemClick }) => {
         <div className="bg-white p-6 rounded-lg card-shadow">
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Recently Viewed</h3>
             <div className="space-y-3">
-                {items.map((item, i) => (
+                {items.map(item => (
                     <button
-                        key={i}
+                        key={item.id}  // <-- aquí la clave
                         onClick={() => onItemClick?.(item)}
                         className="flex items-center group w-full text-left focus:outline-none"
                         type="button"
