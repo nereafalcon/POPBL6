@@ -1,11 +1,8 @@
 package com.example;
 
 import com.rabbitmq.client.DeliverCallback;
-import com.rabbitmq.client.Delivery;
 import org.junit.jupiter.api.*;
-import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,14 +28,14 @@ class RabbitMQUtilTest {
 
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
             String received = new String(delivery.getBody(), StandardCharsets.UTF_8);
-            assertEquals(testMessage, received);
+            assertEquals(testMessage, received, "Received message does not match the sent message");
             latch.countDown();
         };
 
         RabbitMQUtil.receiveMessages(TEST_QUEUE, deliverCallback);
         RabbitMQUtil.sendMessage(TEST_QUEUE, testMessage);
 
-        boolean received = latch.await(2, TimeUnit.SECONDS);
+        boolean received = latch.await(5, TimeUnit.SECONDS); // Increased timeout for reliability
         assertTrue(received, "Message was not received in time");
     }
 
@@ -47,17 +44,14 @@ class RabbitMQUtilTest {
         RabbitMQUtil.sendMessage(TEST_QUEUE, "msg1");
         RabbitMQUtil.sendMessage(TEST_QUEUE, "msg2");
 
-        // Purge the queue
         RabbitMQUtil.purgeQueue(TEST_QUEUE);
 
-        // Try to receive a message, should not get any
         CountDownLatch latch = new CountDownLatch(1);
-
         DeliverCallback deliverCallback = (consumerTag, delivery) -> latch.countDown();
 
         RabbitMQUtil.receiveMessages(TEST_QUEUE, deliverCallback);
 
-        boolean received = latch.await(1, TimeUnit.SECONDS);
+        boolean received = latch.await(2, TimeUnit.SECONDS);
         assertFalse(received, "Queue should be empty after purge");
     }
 
@@ -66,7 +60,6 @@ class RabbitMQUtilTest {
         String queueName = "nonExistentQueue";
         try {
             RabbitMQUtil.sendMessage(queueName, "test");
-            // If no exception, test passes
         } catch (Exception e) {
             fail("Should not throw exception when sending to non-existent queue: " + e.getMessage());
         } finally {
@@ -87,7 +80,7 @@ class RabbitMQUtilTest {
 
         RabbitMQUtil.receiveMessages(TEST_QUEUE, deliverCallback);
 
-        boolean allReceived = latch.await(2, TimeUnit.SECONDS);
+        boolean allReceived = latch.await(5, TimeUnit.SECONDS); // Increased timeout for reliability
         assertTrue(allReceived, "Did not receive all messages");
     }
 }

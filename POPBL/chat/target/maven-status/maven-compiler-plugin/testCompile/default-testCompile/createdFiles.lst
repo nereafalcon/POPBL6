@@ -1,0 +1,10 @@
+com\example\UserImplTest.class
+com\example\RabbitMQUtilTest.class
+com\example\ServidorMainTest.class
+com\example\ChatMessageTest.class
+com\example\CasaTest.class
+com\example\ClienteMainTest.class
+com\example\IUserTest.class
+com\example\IUserServiceTest.class
+com\example\UserServiceImplTest.class
+com\example\IUserTest$MockUser.class
