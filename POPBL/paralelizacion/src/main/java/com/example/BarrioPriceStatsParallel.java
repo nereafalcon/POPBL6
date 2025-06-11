@@ -30,7 +30,7 @@ public class BarrioPriceStatsParallel {
 
         medirTiempo("stream paralelo", () -> calcularStatsStream(viviendas, true));
 
-        int[] hilos = {1, 2, 4, 8};
+        int[] hilos = { 1, 2, 4, 8 };
         for (int threads : hilos) {
             medirTiempo("ExecutorService (" + threads + " hilos)", () -> calcularStatsExecutor(viviendas, threads));
         }
@@ -40,14 +40,15 @@ public class BarrioPriceStatsParallel {
         medirTiempo("ForkJoinPool (4 hilos)", () -> calcularStatsForkJoin(viviendas, 4));
     }
 
-    private static void normalizarDatos(List<Map<String, String>> viviendas) {
+    public static void normalizarDatos(List<Map<String, String>> viviendas) {
         for (Map<String, String> v : viviendas) {
             if (v.get(DISTRICT_KEY) != null)
                 v.put(DISTRICT_KEY, v.get(DISTRICT_KEY).trim().toLowerCase());
         }
     }
 
-    private static Map<String, DoubleSummaryStatistics> calcularStatsStream(List<Map<String, String>> viviendas, boolean paralelo) {
+    public static Map<String, DoubleSummaryStatistics> calcularStatsStream(List<Map<String, String>> viviendas,
+            boolean paralelo) {
         Stream<Map<String, String>> stream = paralelo ? viviendas.parallelStream() : viviendas.stream();
         return stream
                 .filter(v -> safeParseDouble(v.get(PRICEBYAREA_KEY)) < Double.MAX_VALUE && v.get(DISTRICT_KEY) != null
@@ -57,7 +58,7 @@ public class BarrioPriceStatsParallel {
                         Collectors.summarizingDouble(v -> safeParseDouble(v.get(PRICEBYAREA_KEY)))));
     }
 
-    private static void calcularStatsExecutor(List<Map<String, String>> viviendas, int threads) throws Exception {
+    public static void calcularStatsExecutor(List<Map<String, String>> viviendas, int threads) throws Exception {
         ExecutorService pool = Executors.newFixedThreadPool(threads);
         Map<String, List<Map<String, String>>> grouped = viviendas.stream()
                 .filter(v -> safeParseDouble(v.get(PRICEBYAREA_KEY)) < Double.MAX_VALUE && v.get(DISTRICT_KEY) != null
@@ -85,7 +86,7 @@ public class BarrioPriceStatsParallel {
         // printStats("ExecutorService (" + threads + " hilos)", stats);
     }
 
-    private static void calcularStatsChunking(List<Map<String, String>> viviendas, int bloques) throws Exception {
+    public static void calcularStatsChunking(List<Map<String, String>> viviendas, int bloques) throws Exception {
         int chunkSize = (int) Math.ceil((double) viviendas.size() / bloques);
         List<List<Map<String, String>>> chunks = new ArrayList<>();
         for (int i = 0; i < viviendas.size(); i += chunkSize) {
@@ -120,14 +121,16 @@ public class BarrioPriceStatsParallel {
         // printStats("Balanceo de Carga", balancedStats);
     }
 
-    private static void calcularStatsForkJoin(List<Map<String, String>> viviendas, int threads) throws Exception {
+    public static void calcularStatsForkJoin(List<Map<String, String>> viviendas, int threads) throws Exception {
         ForkJoinPool forkJoinPool = new ForkJoinPool(threads);
         try {
             Map<String, DoubleSummaryStatistics> forkJoinStats = forkJoinPool.submit(() -> viviendas.parallelStream()
-                    .filter(v -> safeParseDouble(v.get(PRICEBYAREA_KEY)) < Double.MAX_VALUE && v.get(DISTRICT_KEY) != null)
+                    .filter(v -> safeParseDouble(v.get(PRICEBYAREA_KEY)) < Double.MAX_VALUE
+                            && v.get(DISTRICT_KEY) != null)
                     .collect(Collectors.groupingBy(
                             v -> v.get(DISTRICT_KEY),
-                            Collectors.summarizingDouble(v -> safeParseDouble(v.get(PRICEBYAREA_KEY)))))).get();
+                            Collectors.summarizingDouble(v -> safeParseDouble(v.get(PRICEBYAREA_KEY))))))
+                    .get();
             // printStats("ForkJoinPool", forkJoinStats);
         } finally {
             forkJoinPool.shutdown();
@@ -135,7 +138,7 @@ public class BarrioPriceStatsParallel {
     }
 
     // Cambiado para usar la interfaz funcional que permite Exception
-    private static void medirTiempo(String descripcion, TareaConException tarea) throws Exception {
+    public static void medirTiempo(String descripcion, TareaConException tarea) throws Exception {
         long start = System.currentTimeMillis();
         tarea.run();
         long end = System.currentTimeMillis();
@@ -175,7 +178,7 @@ public class BarrioPriceStatsParallel {
         return result;
     }
 
-    private static double safeParseDouble(String s) {
+    public static double safeParseDouble(String s) {
         try {
             return Double.parseDouble(s);
         } catch (Exception e) {
