@@ -2,9 +2,12 @@
 FROM node:18-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm install --ignore-scripts
 # SonarQube: COPY . . es seguro porque se implementa .dockerignore
-COPY . . # NOSONAR
+COPY src/ ./src/
+COPY public/ ./public/
+COPY package.json ./
+COPY package-lock.json ./
 COPY .npmrc ./
 RUN npm run build
 
