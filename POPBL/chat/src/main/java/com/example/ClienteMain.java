@@ -420,29 +420,37 @@ public class ClienteMain {
 		Matcher dlMatcher = dlPattern.matcher(htmlEspanol);
 
 		StringBuilder definiciones = new StringBuilder();
-		int count = 0;
 		java.util.HashSet<String> definicionesUnicas = new java.util.HashSet<>();
+		int count = 0;
 
 		while (dlMatcher.find() && count < maxDefiniciones) {
 			String dlBlock = dlMatcher.group(1);
-			Pattern ddPattern = Pattern.compile("<dd>(.*?)</dd>", Pattern.DOTALL);
-			Matcher ddMatcher = ddPattern.matcher(dlBlock);
-			while (ddMatcher.find() && count < maxDefiniciones) {
-				String def = limpiarDefinicion(ddMatcher.group(1));
-				int punto = def.indexOf(".");
-				if (punto > 0)
-					def = def.substring(0, punto + 1);
-				if (!def.isEmpty() && !def.matches("^\\d+$") && definicionesUnicas.add(def)) {
-					if (!def.endsWith("."))
-						def = def + ".";
-					definiciones.append(++count).append(". ").append(def).append("\n");
-				}
-			}
+			count = procesarDefinicionesDeBloque(dlBlock, maxDefiniciones, count, definicionesUnicas, definiciones);
 		}
 
 		return definiciones.toString();
 	}
 
+	private static int procesarDefinicionesDeBloque(String dlBlock, int maxDefiniciones, int count,
+													java.util.HashSet<String> definicionesUnicas,
+													StringBuilder definiciones) {
+		Pattern ddPattern = Pattern.compile("<dd>(.*?)</dd>", Pattern.DOTALL);
+		Matcher ddMatcher = ddPattern.matcher(dlBlock);
+
+		while (ddMatcher.find() && count < maxDefiniciones) {
+			String def = limpiarDefinicion(ddMatcher.group(1));
+			int punto = def.indexOf(".");
+			if (punto > 0)
+				def = def.substring(0, punto + 1);
+
+			if (!def.isEmpty() && !def.matches("^\\d+$") && definicionesUnicas.add(def)) {
+				if (!def.endsWith("."))
+					def = def + ".";
+				definiciones.append(++count).append(". ").append(def).append("\n");
+			}
+		}
+		return count;
+	}
 
     // Extrae la limpieza de definiciones a un método aparte
     private static String limpiarDefinicion(String def) {

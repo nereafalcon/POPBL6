@@ -31,7 +31,7 @@ const Pagination = () => {
 
 				{pages.map((page) => {
 				  if (page === '...') {
-					ellipsisCount += 1;
+					let ellipsisCount += 1;
 					return (
 					  <span
 						key={`ellipsis-${ellipsisCount}`}  // key basado en cuántos elipsis van
