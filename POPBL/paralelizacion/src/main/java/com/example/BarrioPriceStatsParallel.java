@@ -10,9 +10,14 @@ import java.util.stream.*;
 
 public class BarrioPriceStatsParallel {
 
-    // Constante para evitar duplicar el literal "district"
     private static final String DISTRICT_KEY = "district";
-	private static final String PRICEBYAREA_KEY = "priceByArea";
+    private static final String PRICEBYAREA_KEY = "priceByArea";
+
+    // Nueva interfaz funcional que permite lanzar checked exceptions
+    @FunctionalInterface
+    interface TareaConException {
+        void run() throws Exception;
+    }
 
     public static void main(String[] args) throws Exception {
         String csvPath = "paralelizacion\\src\\main\\resources\\idealista_toda_españa_2025-05-29.csv";
@@ -21,22 +26,17 @@ public class BarrioPriceStatsParallel {
 
         normalizarDatos(viviendas);
 
-        // 1. Stream secuencial
         medirTiempo("stream secuencial", () -> calcularStatsStream(viviendas, false));
 
-        // 2. Stream paralelo
         medirTiempo("stream paralelo", () -> calcularStatsStream(viviendas, true));
 
-        // 3. ExecutorService con varios hilos
         int[] hilos = {1, 2, 4, 8};
         for (int threads : hilos) {
             medirTiempo("ExecutorService (" + threads + " hilos)", () -> calcularStatsExecutor(viviendas, threads));
         }
 
-        // 4. Chunking y balanceo de carga
         medirTiempo("balanceo de carga (4 bloques)", () -> calcularStatsChunking(viviendas, 4));
 
-        // 5. ForkJoinPool
         medirTiempo("ForkJoinPool (4 hilos)", () -> calcularStatsForkJoin(viviendas, 4));
     }
 
@@ -134,7 +134,8 @@ public class BarrioPriceStatsParallel {
         }
     }
 
-    private static void medirTiempo(String descripcion, Runnable tarea) throws Exception {
+    // Cambiado para usar la interfaz funcional que permite Exception
+    private static void medirTiempo(String descripcion, TareaConException tarea) throws Exception {
         long start = System.currentTimeMillis();
         tarea.run();
         long end = System.currentTimeMillis();
