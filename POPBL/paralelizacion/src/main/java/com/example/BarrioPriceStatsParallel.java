@@ -64,7 +64,6 @@ public class BarrioPriceStatsParallel {
                                 .summaryStatistics();
                         stats.put(barrio, s);
                     } catch (Exception e) {
-                        e.printStackTrace();
                     }
                 }));
             }
