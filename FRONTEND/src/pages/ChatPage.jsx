@@ -90,18 +90,18 @@ const ChatPage = () => {
                     <div className="p-4 border-b font-semibold text-lg">Mezuak</div>
                     <div className="flex flex-col">
                         {Object.entries(conversations).map(([id, convo]) => (
-                            <div
-                                key={id}
-                                onClick={() => setSelectedChatId(id)}
-                                className={`px-4 py-3 cursor-pointer hover:bg-gray-100 ${
-                                    selectedChatId === id ? "bg-gray-100 font-medium" : ""
-                                }`}
-                            >
-                                <div>{convo.name}</div>
-                                <div className="text-sm text-gray-500 truncate">
-                                    {convo.messages[convo.messages.length - 1].text}
-                                </div>
-                            </div>
+                            <button
+								key={id}
+								onClick={() => setSelectedChatId(id)}
+								className={`w-full text-left px-4 py-3 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+									selectedChatId === id ? "bg-gray-100 font-medium" : ""
+								}`}
+							>
+								<div>{convo.name}</div>
+								<div className="text-sm text-gray-500 truncate">
+									{convo.messages[convo.messages.length - 1].text}
+								</div>
+							</button>
                         ))}
                     </div>
 
